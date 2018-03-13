@@ -1,0 +1,9 @@
+build.sbt
+.idea/*
+project/
+target/
+*.class
+*.iml
+*.ipr
+*.iws
+out/*
