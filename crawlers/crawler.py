@@ -4,22 +4,13 @@ import json
 
 from bs4 import BeautifulSoup
 
-baseUrl='http://paizo.com'
-
-bestiaryLinkList = []
-bestiaryLinkList.append(['/pathfinderRPG/prd/bestiary/','monsterIndex.html'])
-#bestiaryLinkList.append(['/pathfinderRPG/prd/bestiary2/','additionalMonsterIndex.html'])
-#bestiaryLinkList.append(['/pathfinderRPG/prd/bestiary3/','monsterIndex.html'])
-#bestiaryLinkList.append(['/pathfinderRPG/prd/bestiary4/','monsterIndex.html'])
-#bestiaryLinkList.append(['/pathfinderRPG/prd/bestiary5/','index.html'])
 
 
-monsters = []
 
-# Loop over bestiaries
-for bestiaryLink in bestiaryLinkList:
-    
-    response = urllib2.urlopen(baseUrl + bestiaryLink[0] + bestiaryLink[1])
+def crawl_bestiary(url):
+    baseUrl='http://paizo.com'
+    monsters = []
+    response = urllib2.urlopen(baseUrl + url[0] + url[1])
     html = response.read()
 
     hmtlNoHeader =  html.split('A Monsters',1)[1]
@@ -37,8 +28,8 @@ for bestiaryLink in bestiaryLinkList:
             linkWithNoAnchor = link[0]
         
         #There are relative and absolute links
-        if bestiaryLink[0] == '/pathfinderRPG/prd/bestiary/':
-            monsterUrl = baseUrl + bestiaryLink[0] + linkWithNoAnchor
+        if url[0] == '/pathfinderRPG/prd/bestiary/':
+            monsterUrl = baseUrl + url[0] + linkWithNoAnchor
         else:
             monsterUrl = baseUrl + linkWithNoAnchor
             
@@ -62,7 +53,20 @@ for bestiaryLink in bestiaryLinkList:
             allMonsterSpells = re.findall('\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)',monsterHtml, re.DOTALL)
             for monsterSpell in allMonsterSpells:
                 monster['spells'].append(monsterSpell)
-            
+                
             monsters.append(monster)
+            
+    print json.dumps(monsters, sort_keys=True, indent=4, separators=(',', ': '))
     
-print(monsters)
+    
+def main():
+    bestiary1 = (['/pathfinderRPG/prd/bestiary/','monsterIndex.html'])
+    bestiary2 = (['/pathfinderRPG/prd/bestiary2/','additionalMonsterIndex.html'])
+    bestiary3 = (['/pathfinderRPG/prd/bestiary3/','monsterIndex.html'])
+    bestiary4 = (['/pathfinderRPG/prd/bestiary4/','monsterIndex.html'])
+    bestiary5 = (['/pathfinderRPG/prd/bestiary5/','index.html'])
+    
+    crawl_bestiary(bestiary1)
+    
+if __name__ == '__main__':
+    main()
