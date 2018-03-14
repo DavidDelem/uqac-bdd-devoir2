@@ -8,10 +8,13 @@ baseUrl='http://paizo.com'
 
 bestiaryLinkList = []
 bestiaryLinkList.append(['/pathfinderRPG/prd/bestiary/','monsterIndex.html'])
-bestiaryLinkList.append(['/pathfinderRPG/prd/bestiary2/','additionalMonsterIndex.html'])
-bestiaryLinkList.append(['/pathfinderRPG/prd/bestiary3/','monsterIndex.html'])
-bestiaryLinkList.append(['/pathfinderRPG/prd/bestiary4/','monsterIndex.html'])
-bestiaryLinkList.append(['/pathfinderRPG/prd/bestiary5/','index.html']) 
+#bestiaryLinkList.append(['/pathfinderRPG/prd/bestiary2/','additionalMonsterIndex.html'])
+#bestiaryLinkList.append(['/pathfinderRPG/prd/bestiary3/','monsterIndex.html'])
+#bestiaryLinkList.append(['/pathfinderRPG/prd/bestiary4/','monsterIndex.html'])
+#bestiaryLinkList.append(['/pathfinderRPG/prd/bestiary5/','index.html'])
+
+
+monsters = []
 
 # Loop over bestiaries
 for bestiaryLink in bestiaryLinkList:
@@ -40,8 +43,6 @@ for bestiaryLink in bestiaryLinkList:
             monsterUrl = baseUrl + linkWithNoAnchor
             
         monsterName = link[1]
-
-        print monsterUrl
         print monsterName
 
         mr = urllib2.urlopen(monsterUrl)
@@ -52,4 +53,16 @@ for bestiaryLink in bestiaryLinkList:
         if monsterName in monsterHtml:
             monsterHtml = monsterHtml.split(monsterName,1)[1]
             monsterHtml = monsterHtml.split('Statistics',1)[0]
-            #TO DO : list all monster's spells, regexp : \/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)
+            
+            monster = {}
+            
+            monster['name'] = monsterName
+            monster['spells'] = []
+            
+            allMonsterSpells = re.findall('\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)',monsterHtml, re.DOTALL)
+            for monsterSpell in allMonsterSpells:
+                monster['spells'].append(monsterSpell)
+            
+            monsters.append(monster)
+    
+print(monsters)
