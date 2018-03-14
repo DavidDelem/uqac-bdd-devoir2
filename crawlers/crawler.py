@@ -1,39 +1,55 @@
-#http://paizo.com/pathfinderRPG/prd/indices/bestiary.html
-
 import urllib2
 import re
 import json
 
 from bs4 import BeautifulSoup
 
-url='http://paizo.com/pathfinderRPG/prd/indices/bestiary.html'
-nbMonsters=2685
-A="A"
-#for x in range(1, nbMonsters):
+baseUrl='http://paizo.com'
 
-response = urllib2.urlopen(url)
-html = response.read()
+bestiaryLinkList = []
+bestiaryLinkList.append(['/pathfinderRPG/prd/bestiary/','monsterIndex.html'])
+bestiaryLinkList.append(['/pathfinderRPG/prd/bestiary2/','additionalMonsterIndex.html'])
+bestiaryLinkList.append(['/pathfinderRPG/prd/bestiary3/','monsterIndex.html'])
+bestiaryLinkList.append(['/pathfinderRPG/prd/bestiary4/','monsterIndex.html'])
+bestiaryLinkList.append(['/pathfinderRPG/prd/bestiary5/','index.html']) 
 
-hmtlNoHeader =  html.split('<ul id="index-monsters-A" title="A Monsters">',1)[1]
-htmlNoHeaderNoFooter =  hmtlNoHeader.split('<div class = "footer">',1)[0]
+# Loop over bestiaries
+for bestiaryLink in bestiaryLinkList:
+    
+    response = urllib2.urlopen(baseUrl + bestiaryLink[0] + bestiaryLink[1])
+    html = response.read()
 
-allLink= re.findall ('(\/pathfinderRPG\/prd[^"]*)">([^<]*)',htmlNoHeaderNoFooter, re.DOTALL)
-print len(allLink)
+    hmtlNoHeader =  html.split('A Monsters',1)[1]
+    htmlNoHeaderNoFooter =  hmtlNoHeader.split('footer',1)[0]
 
+    allMonsterLink= re.findall('href ?= ?"([^"]*)">([^<]*)',htmlNoHeaderNoFooter, re.DOTALL)
 
+    # Loop over all monsters of one bestiary
+    for link in allMonsterLink:
+        
+        #Delete anchor part of monster link
+        if '#' in link[0]:
+            linkWithNoAnchor = link[0].split('#',1)[0]
+        else:
+            linkWithNoAnchor = link[0]
+        
+        #There are relative and absolute links
+        if bestiaryLink[0] == '/pathfinderRPG/prd/bestiary/':
+            monsterUrl = baseUrl + bestiaryLink[0] + linkWithNoAnchor
+        else:
+            monsterUrl = baseUrl + linkWithNoAnchor
+            
+        monsterName = link[1]
 
-for link in allLink:
-    print 'http://paizo.com'+link[0]
-    print link[1]
-    mr = urllib2.urlopen('http://paizo.com'+link[0])
-    monsterHtml = mr.read()
-    monsterHtmlFromH1 =  monsterHtml.split(link[1].split(',')[0],1)[1]
-#    monsterHtmlOffense=monsterHtmlFromH1.split('<p class = "stat-block-breaker">Offense</p>',1)[1]
-#    monsterHtmlOnlyOffense=monsterHtmlOffense.split('<p class = "stat-block-breaker">Statistics</p>',1)[0]
-#
-#    print 'http://paizo.com'+link[0]
+        print monsterUrl
+        print monsterName
 
-
-
-
-
+        mr = urllib2.urlopen(monsterUrl)
+        
+        #Delete all span, a monster detail page can contain span in the monster title
+        monsterHtml = re.sub('<\/?span[^>]*>', '', mr.read())
+        
+        if monsterName in monsterHtml:
+            monsterHtml = monsterHtml.split(monsterName,1)[1]
+            monsterHtml = monsterHtml.split('Statistics',1)[0]
+            #TO DO : list all monster's spells, regexp : \/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)
