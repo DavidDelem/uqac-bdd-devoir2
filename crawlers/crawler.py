@@ -34,7 +34,6 @@ def crawl_bestiary(url):
             monsterUrl = baseUrl + linkWithNoAnchor
             
         monsterName = link[1]
-        print monsterName
 
         mr = urllib2.urlopen(monsterUrl)
         
@@ -51,8 +50,9 @@ def crawl_bestiary(url):
             monster['spells'] = []
             
             allMonsterSpells = re.findall('\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)',monsterHtml, re.DOTALL)
-            for monsterSpell in allMonsterSpells:
-                monster['spells'].append(monsterSpell)
+            if allMonsterSpells:
+                for monsterSpell in allMonsterSpells:
+                    monster['spells'].append(monsterSpell)
                 
             monsters.append(monster)
             
