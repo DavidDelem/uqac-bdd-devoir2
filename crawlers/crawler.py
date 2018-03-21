@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 
 
 
-def crawl_bestiary(url):
+def crawl_bestiary(url, regex):
     baseUrl='http://paizo.com'
     monsters = []
     response = urllib2.urlopen(baseUrl + url[0] + url[1])
@@ -48,15 +48,16 @@ def crawl_bestiary(url):
             
             monster['name'] = monsterName
             monster['spells'] = []
-            
-            allMonsterSpells = re.findall('\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)',monsterHtml, re.DOTALL)
+            print(monsterName)
+            allMonsterSpells = re.findall(regex,monsterHtml, re.DOTALL)
+            print(allMonsterSpells)
             if allMonsterSpells:
                 for monsterSpell in allMonsterSpells:
                     monster['spells'].append(monsterSpell)
                 
             monsters.append(monster)
-            
-    print json.dumps(monsters, sort_keys=True, indent=4, separators=(',', ': '))
+    allMonsterFile = open("allMonsters.json","a+")
+    allMonsterFile.write(json.dumps(monsters, sort_keys=True, indent=4, separators=(',', ': ')))
     
     
 def main():
@@ -66,7 +67,7 @@ def main():
     bestiary4 = (['/pathfinderRPG/prd/bestiary4/','monsterIndex.html'])
     bestiary5 = (['/pathfinderRPG/prd/bestiary5/','index.html'])
     
-    crawl_bestiary(bestiary1)
+    crawl_bestiary(bestiary1, '\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)')
     
 if __name__ == '__main__':
     main()
