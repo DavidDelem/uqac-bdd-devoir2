@@ -4,10 +4,11 @@ import json
 
 from bs4 import BeautifulSoup
 
+from multiprocessing import Pool
 
 
 
-def crawl_bestiary(url):
+def crawl_bestiary(url, regex):
     baseUrl='http://paizo.com'
     monsters = []
     response = urllib2.urlopen(baseUrl + url[0] + url[1])
@@ -48,25 +49,49 @@ def crawl_bestiary(url):
             
             monster['name'] = monsterName
             monster['spells'] = []
-            
-            allMonsterSpells = re.findall('\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)',monsterHtml, re.DOTALL)
+            print(monsterName)
+            allMonsterSpells = re.findall(regex,monsterHtml, re.DOTALL)
+            print(allMonsterSpells)
             if allMonsterSpells:
                 for monsterSpell in allMonsterSpells:
                     monster['spells'].append(monsterSpell)
                 
             monsters.append(monster)
             
-    print json.dumps(monsters, sort_keys=True, indent=4, separators=(',', ': '))
+    return monsters
     
     
 def main():
+    pool = Pool(processes=5)
+        
     bestiary1 = (['/pathfinderRPG/prd/bestiary/','monsterIndex.html'])
     bestiary2 = (['/pathfinderRPG/prd/bestiary2/','additionalMonsterIndex.html'])
     bestiary3 = (['/pathfinderRPG/prd/bestiary3/','monsterIndex.html'])
     bestiary4 = (['/pathfinderRPG/prd/bestiary4/','monsterIndex.html'])
     bestiary5 = (['/pathfinderRPG/prd/bestiary5/','index.html'])
     
-    crawl_bestiary(bestiary1)
+    b1 = pool.apply_async(crawl_bestiary, [bestiary1, '\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)']) 
+    b2 = pool.apply_async(crawl_bestiary, [bestiary2, '\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)']) 
+    b3 = pool.apply_async(crawl_bestiary, [bestiary3, '\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)']) 
+    b4 = pool.apply_async(crawl_bestiary, [bestiary4, '\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)']) 
+    b5 = pool.apply_async(crawl_bestiary, [bestiary5, '\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?><em>([^<]*)']) 
+
+    a1 = b1.get(timeout=99999)
+    a2 = b2.get(timeout=99999)
+    a3 = b3.get(timeout=99999)
+    a4 = b4.get(timeout=99999)
+    a5 = b5.get(timeout=99999)
+    allMonsters = a1+a2+a3+a4+a5
+    allMonsterFile = open("allMonsters.json","w")
+    allMonsterFile.write(json.dumps(allMonsters, sort_keys=True, indent=4, separators=(',', ': ')))
+
+    
+    #crawl_bestiary(bestiary1, '\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)')
+    #crawl_bestiary(bestiary2, '\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)')
+    #crawl_bestiary(bestiary3, '\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)')
+    #crawl_bestiary(bestiary4, '\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)')
+    #crawl_bestiary(bestiary5, '\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)') #regex sort ne marche pas 
+
     
 if __name__ == '__main__':
     main()
