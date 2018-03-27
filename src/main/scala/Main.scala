@@ -11,9 +11,8 @@ object Main extends App {
   val sqlContext = SparkSession.builder().master(master).getOrCreate()
 
   val df = sqlContext.read.json(sc.wholeTextFiles(file).values)
-  df.show()
-//  df.createOrReplaceTempView("bestiary")
-//  val sqlDF = sqlContext.sql("SELECT * FROM bestiary")
-//  sqlDF.show()
+  df.createOrReplaceTempView("bestiary")
+  val sqlDF = sqlContext.sql("SELECT count(*) FROM bestiary")
+  sqlDF.show()
 }
 
