@@ -4,7 +4,6 @@ import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 import net.liftweb.json.DefaultFormats
 import net.liftweb.json._
-
 import scala.collection.mutable.ListBuffer
 
 object Main extends App {
@@ -32,22 +31,44 @@ object Main extends App {
 
   //Création du rdd à partir de notre liste
   val rddAllMonster = sc.parallelize(allMonsterList)
-  println(rddAllMonster)
 
-  //création de la batch view (sort(monstre1, monstre2, monstre3...))
+  //création de la batch view (Pour chaque spell, liste des monstres possédant ce spell)
   val batchViewSpellMonsters = rddAllMonster.flatMap(monster=>
-    monster.spells.map(spells => (spells, monster.name))
+    monster.spells.map(spell => (spell, monster.name))
   ).groupByKey()
+
+  //Filtre du RDD total pour avoir que les spells de heal et cure
+  val batchViewHealSpellMonsters = batchViewSpellMonsters.filter(spell => spell._1.matches(".*(cure|wound).*"))
 
   //Création d'un fichier html avec les résultats
   val saveFile = "batchViewSpellMonsters.html"
+  val saveFileHeal = "batchViewHealSpellMonsters.html"
 
-  val writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(saveFile)))
+  var writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(saveFile)))
 
   writer.write("<style>table, th, td {\n    border: 1px solid black;\n    border-collapse: collapse;\n}</style>\n")
   writer.write("<table>\n  <tr>\n    <th>Spell</th>\n    <th>Monsters</th> \n </tr>")
 
   for (spellMonsters <- batchViewSpellMonsters) {
+    writer.write("<tr>\n")
+    writer.write("<td>"+spellMonsters._1 + "</td>\n")
+    writer.write("<td>")
+    for(monster <- spellMonsters._2) {
+      writer.write(monster + " ")
+    }
+    writer.write("</td>\n")
+    writer.write("</tr>\n")
+  }
+
+  writer.write("<table> \n")
+  writer.close()
+
+  writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(saveFileHeal)))
+
+  writer.write("<style>table, th, td {\n    border: 1px solid black;\n    border-collapse: collapse;\n}</style>\n")
+  writer.write("<table>\n  <tr>\n    <th>Spell</th>\n    <th>Monsters</th> \n </tr>")
+
+  for (spellMonsters <- batchViewHealSpellMonsters) {
     writer.write("<tr>\n")
     writer.write("<td>"+spellMonsters._1 + "</td>\n")
     writer.write("<td>")
