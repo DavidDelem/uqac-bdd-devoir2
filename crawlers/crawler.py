@@ -19,9 +19,11 @@ def crawl_bestiary(url, regex):
 
     allMonsterLink= re.findall('href ?= ?"([^"]*)">([^<]*)',htmlNoHeaderNoFooter, re.DOTALL)
 
+    counter = 0.0
     # Loop over all monsters of one bestiary
     for link in allMonsterLink:
-        
+        print url[0]," is at ",round(counter/len(allMonsterLink)*100,1),"%"
+        counter+=1
         #Delete anchor part of monster link
         if '#' in link[0]:
             linkWithNoAnchor = link[0].split('#',1)[0]
@@ -49,9 +51,9 @@ def crawl_bestiary(url, regex):
             
             monster['name'] = monsterName
             monster['spells'] = []
-            print(monsterName)
+            # print(monsterName)
             allMonsterSpells = re.findall(regex,monsterHtml, re.DOTALL)
-            print(allMonsterSpells)
+            # print(allMonsterSpells)
             if allMonsterSpells:
                 for monsterSpell in allMonsterSpells:
                     monster['spells'].append(monsterSpell)
@@ -84,13 +86,6 @@ def main():
     allMonsters = a1+a2+a3+a4+a5
     allMonsterFile = open("allMonsters.json","w")
     allMonsterFile.write(json.dumps(allMonsters, sort_keys=True, indent=4, separators=(',', ': ')))
-
-    
-    #crawl_bestiary(bestiary1, '\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)')
-    #crawl_bestiary(bestiary2, '\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)')
-    #crawl_bestiary(bestiary3, '\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)')
-    #crawl_bestiary(bestiary4, '\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)')
-    #crawl_bestiary(bestiary5, '\/pathfinderRPG\/prd\/coreRulebook\/spells[^"]*" ?>([^<]*)') #regex sort ne marche pas 
 
     
 if __name__ == '__main__':
