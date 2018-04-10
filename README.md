@@ -46,6 +46,8 @@ CAPTURES D’ECRAN PARTIELLE DE TOUS LES SORTS
 
 <h3>Exercice 2</h3>
 
+<h4>Combat 1. Solar vs Éclaireurs Orcs</h4>
+
 <b>Ce qu'on doit faire:</b><br>
 
 graph Graph
@@ -66,4 +68,7 @@ g = g.joinVertixes( beaucoup de code la dedans)
 <b>3. check fin</b>
 
 }
+
+
+<h4>Combat 2. Les Orcs et le dragon vert attaquent le village de Pito</h4>
 
