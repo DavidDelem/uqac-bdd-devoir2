@@ -8,7 +8,7 @@
 <h4>Partie 1</h4>
 
 <b>Fichiers:</b>
-Le crawler: crawlers/crawler.py
+Le crawler: crawlers/crawler.py<br>
 Le json obtenu: crawlers/allMonsters.json
 
 <b>Ce qu'on a fait:</b>
@@ -17,7 +17,7 @@ Nous avons réalisé un crawler en Python puis avons choisi de faire un JSON.
 <h4>Partie 2</h4>
 
 <b>Fichiers:</b>
-Classe principale: src/main/scala/Main.scala
+Classe principale: src/main/scala/Main.scala<br>
 Représente un monstre: src/main/Monster.scala
 
 <b>Ce qu'on a fait:</b>
@@ -31,8 +31,8 @@ CAPTURES D’ECRAN
 <h4>Partie 3</h4>
 
 <b>Fichiers:</b>
-Classe principale: src/main/scala/Main.scala
-Sorts de healing: fichier html ou on les a save
+Classe principale: src/main/scala/Main.scala<br>
+Sorts de healing: fichier html ou on les a save<br>
 Bonus tous les sorts: fichier html ou on les a save
 
 <b>Ce qu'on a fait:</b>
@@ -51,7 +51,7 @@ CAPTURES D’ECRAN PARTIELLE DE TOUS LES SORTS
 graph Graph
 var g: graph
 
-while(true) {
+while(true) {<br>
  <b>1 . génrere messages</b>
 
 val msg = g.agregatemessages(
