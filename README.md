@@ -7,20 +7,20 @@
 
 <h4>Partie 1</h4>
 
-<b>Fichiers:</b>
-Le crawler: crawlers/crawler.py<br>
-Le json obtenu: crawlers/allMonsters.json
+<b>Fichiers:</b><br>
+Le crawler: <i>crawlers/crawler.py</i><br>
+Le json obtenu: <i>crawlers/allMonsters.json</i><br>
 
-<b>Ce qu'on a fait:</b>
+<b>Ce qu'on a fait:</b><br>
 Nous avons réalisé un crawler en Python puis avons choisi de faire un JSON.
 
 <h4>Partie 2</h4>
 
-<b>Fichiers:</b>
-Classe principale: src/main/scala/Main.scala<br>
-Représente un monstre: src/main/Monster.scala
+<b>Fichiers:</b><br>
+Classe principale: <i>src/main/scala/Main.scala</i><br>
+Représente un monstre: <i>src/main/Monster.scala</i><br>
 
-<b>Ce qu'on a fait:</b>
+<b>Ce qu'on a fait:</b><br>
 Nous avons mis les données crawlées dans un RDD Spark pour que toutes les opérations puissent être parallélisées entre nos machines. Pour cela, on défini un Master et des Slaves.
 
 Le Master fait la commande suivante dans spark:
@@ -30,12 +30,12 @@ CAPTURES D’ECRAN
 
 <h4>Partie 3</h4>
 
-<b>Fichiers:</b>
-Classe principale: src/main/scala/Main.scala<br>
-Sorts de healing: fichier html ou on les a save<br>
-Bonus tous les sorts: fichier html ou on les a save
+<b>Fichiers:</b><br>
+Classe principale: <i>src/main/scala/Main.scala</i><br>
+Sorts de healing: <i>fichier html ou on les a save</i><br>
+Bonus tous les sorts: <i>fichier html ou on les a save</i><br>
 
-<b>Ce qu'on a fait:</b>
+<b>Ce qu'on a fait:</b><br>
 Nous avons créé une batch view permettant à Pito de visualiser rapidement les créatures qui peuvent le tirer d’affaire grâce à un reduceByKey:
 
 CAPTURE D’ECRAN DES SORTS DE HEALING
@@ -46,7 +46,7 @@ CAPTURES D’ECRAN PARTIELLE DE TOUS LES SORTS
 
 <h3>Exercice 2</h3>
 
-<b>Ce qu'on doit faire:</b>
+<b>Ce qu'on doit faire:</b><br>
 
 graph Graph
 var g: graph
