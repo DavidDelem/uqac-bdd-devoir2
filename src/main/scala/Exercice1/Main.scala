@@ -1,9 +1,10 @@
+package Exercice1
+
 import java.io.{BufferedWriter, FileOutputStream, OutputStreamWriter}
 
-import org.apache.spark.SparkConf
-import org.apache.spark.SparkContext
-import net.liftweb.json.DefaultFormats
-import net.liftweb.json._
+import net.liftweb.json.{DefaultFormats, _}
+import org.apache.spark.{SparkConf, SparkContext}
+
 import scala.collection.mutable.ListBuffer
 
 object Main extends App {

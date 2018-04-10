@@ -1,3 +1,5 @@
+package Exercice1
+
 import org.apache.spark.{SparkConf, SparkContext}
 
 object Example extends App {
