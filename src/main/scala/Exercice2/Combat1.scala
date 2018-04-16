@@ -52,7 +52,21 @@ object Combat1 extends App {
       Edge(1L, 13L, "enemy"),
       Edge(1L, 14L, "enemy"),
       Edge(1L, 15L, "enemy"),
-      Edge(1L, 16L, "enemy")
+      Edge(1L, 16L, "enemy"),
+      Edge(3L, 1L, "enemy"),
+      Edge(4L, 1L, "enemy"),
+      Edge(5L, 1L, "enemy"),
+      Edge(6L, 1L, "enemy"),
+      Edge(7L, 1L, "enemy"),
+      Edge(8L, 1L, "enemy"),
+      Edge(9L, 1L, "enemy"),
+      Edge(10L, 1L, "enemy"),
+      Edge(11L, 1L, "enemy"),
+      Edge(12L, 1L, "enemy"),
+      Edge(13L, 1L, "enemy"),
+      Edge(14L, 1L, "enemy"),
+      Edge(15L, 1L, "enemy"),
+      Edge(16L, 1L, "enemy")
     ))
 
   // Build the initial Graph
@@ -60,7 +74,7 @@ object Combat1 extends App {
 
   val facts: RDD[String] =
     graph.triplets.map(triplet =>
-      triplet.srcAttr.getName() + " is the " + triplet.attr + " of " + triplet.dstAttr.getName())
+      triplet.srcAttr.getName + " is the " + triplet.attr + " of " + triplet.dstAttr.getName)
   facts.collect.foreach(println(_))
 
 }
