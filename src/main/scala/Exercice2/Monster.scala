@@ -1,14 +1,25 @@
 package Exercice2
 
-abstract class Monster() extends LivingEntity {
+import Exercice2.Utils.Position
 
-  protected var regeneration : Int = 0
-  //Type de vitesse, vitesse
-  protected var speeds: List[(String, Int)] = List()
-  protected var melee: Attack = null
-  protected var ranged: Attack = null
+abstract class Monster(
+                        name: String,
+                        hp: Int,
+                        armor: Int,
+                        position: Position,
+                        var regeneration : Int = 0,
+                        var speeds: List[(String, Int)] = null,
+                        var melee: Attack = null,
+                        var ranged: Attack = null)
+  extends LivingEntity(
+    name,
+    hp,
+    armor,
+    position) {
 
-  def attack(target: LivingEntity, distance: Int) : Unit = {
+
+
+  def attack(target: LivingEntity, distance: Double) : Unit = {
 
     var attack: Attack = null
 
@@ -21,6 +32,6 @@ abstract class Monster() extends LivingEntity {
 
   }
 
-  override def toString: String = "Name : " + name + ", HP : " + hp + ", Armor : " + armor + ", Regeneration : " + regeneration + "Speeds : " + speeds
+  override def toString: String = "Name : " + name + ", HP : " + hp + ", Armor : " + armor + ", Regeneration : " + regeneration + ", Speeds : " + speeds
 
 }

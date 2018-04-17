@@ -1,9 +1,8 @@
 package Exercice2.Bestiary
 
 import Exercice2.LivingEntity
+import Exercice2.Utils.Position
 
-class Pito extends LivingEntity {
-  this.name = "Pito"
-  this.hp = 10
-  this.armor = 0
+class Pito (position: Position) extends LivingEntity ("Pito", 10, 0, position ) {
+
 }
