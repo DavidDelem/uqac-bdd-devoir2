@@ -4,7 +4,7 @@ import Exercice2.Utils.Position
 
 class LivingEntity (var name: String = "", var hp: Int = 0, var armor: Int = 0, var position: Position = null) extends Serializable {
 
-  def takeDamage(amount: Int) = {
+  def takeDamage(amount: Int): Unit = {
     this.hp -= amount
     if(this.hp < 0) this.hp = 0
   }

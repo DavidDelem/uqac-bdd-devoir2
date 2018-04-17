@@ -75,7 +75,7 @@ class Game extends Serializable {
 
     }
 
-    gameLoop //execute loop
+    gameLoop() //execute loop
     myGraph //return the result graph
   }
 
