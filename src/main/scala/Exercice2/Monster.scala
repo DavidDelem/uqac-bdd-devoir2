@@ -10,7 +10,8 @@ abstract class Monster(
                         var regeneration : Int = 0,
                         var speeds: List[(String, Int)] = null,
                         var melee: Attack = null,
-                        var ranged: Attack = null)
+                        var ranged: Attack = null,
+                        var target: LivingEntity = null)
   extends LivingEntity(
     name,
     hp,
@@ -32,6 +33,13 @@ abstract class Monster(
 
   }
 
+  def updateTarget(proposedTarget: LivingEntity) = {
+    //exemple : on pourra faire des check plus précis
+    if(this.target == null) this.target = proposedTarget
+    if(this.target.hp < proposedTarget.hp) this.target = proposedTarget
+
+
+  }
   override def toString: String = "Name : " + name + ", HP : " + hp + ", Armor : " + armor + ", Regeneration : " + regeneration + ", Speeds : " + speeds
 
 }

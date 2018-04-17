@@ -27,10 +27,15 @@ class Game extends Serializable {
 
   def mergeMsg(monster1: LivingEntity, monster2: LivingEntity): LivingEntity = {
     //choisir parmis toutes les cibles une à attaquer
+
     System.out.println("------------- mergeMsg -------------")
+
+    (monster1.asInstanceOf[Monster]).updateTarget(monster2)
+    (monster2.asInstanceOf[Monster]).updateTarget(monster1)
 
     monster1
   }
+
 
   def execute(g: Graph[LivingEntity, Link], sc: SparkContext, maxIterations: Int): Graph[LivingEntity, Link] = {
     var myGraph = g
@@ -55,7 +60,7 @@ class Game extends Serializable {
         myGraph = myGraph.joinVertices(messages) {
           System.out.println("------------- join vertices -------------")
           //faire la perte des hp
-          System.out.println(messages.collect().foreach(elem => println(elem)))
+          System.out.println(messages.collect().foreach(elem => println(elem._1)))
           (vid, sommet, bestId) => sommet
         }
 
