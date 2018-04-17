@@ -10,7 +10,7 @@ class Game {
     var roundCounter = 0
     val fields = new TripletFields(true, true, true)
 
-    def gameLoop: Unit = {
+    def gameLoop(): Unit = {
       while (true) {
         roundCounter+=1
         println("Battle round : " + roundCounter)
