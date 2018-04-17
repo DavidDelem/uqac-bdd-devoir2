@@ -1,18 +1,25 @@
 package Exercice2
 
-class Monster() extends LivingEntity {
+abstract class Monster() extends LivingEntity {
 
-  protected var armor = 0
-  protected var regeneration = 0
-
+  protected var regeneration : Int = 0
   //Type de vitesse, vitesse
-  protected var speeds = List.empty[(String, Int)]
+  protected var speeds: List[(String, Int)] = List()
+  protected var melee: Attack = null
+  protected var ranged: Attack = null
 
-  //Nom attaque, Précisions, Dommages[Min, Max], Distance à laquelle il peut utiliser l'attaque
-  protected var melee: (String, List[Int], List[Int], Int) = ("", List.empty[Int], List.empty[Int], 0)
+  def attack(target: LivingEntity, distance: Int) : Unit = {
 
-  //Nom attaque, Précisions, Dommages[Min, Max],  Distance à laquelle il peut utiliser l'attaque
-  protected var ranged: (String, List[Int], List[Int], Int) = ("", List.empty[Int], List.empty[Int], 0)
+    var attack: Attack = null
+
+    if(distance <= melee.minDistance) attack = melee
+    else if(distance <= ranged.minDistance) attack = ranged
+    else return
+
+    val damage = attack.getDamage
+    if(damage >= target.armor) target.takeDamage(damage)
+
+  }
 
   override def toString: String = "Name : " + name + ", HP : " + hp + ", Armor : " + armor + ", Regeneration : " + regeneration + "Speeds : " + speeds
 

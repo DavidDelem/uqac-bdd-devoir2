@@ -1,6 +1,6 @@
 package Exercice2.Bestiary
 
-import Exercice2.Monster
+import Exercice2.{Attack, Monster}
 
 class OrcWorgRider extends Monster {
   this.name = "Orc worg Rider"
@@ -8,8 +8,7 @@ class OrcWorgRider extends Monster {
   this.armor = 18
   this.regeneration = 0
   this.speeds = ("ft", 20) :: this.speeds
-  this.melee = ("mwk battleaxe", List(6), List(4, 12), 5)
-  this.ranged = ("shortbow", List(4), List(1, 6), 110)
 
-
+  this.melee = new Attack("mwk battleaxe", 4, 12, List(6), 5)
+  this.ranged = new Attack("shortbow", 1, 6, List(4), 110)
 }
