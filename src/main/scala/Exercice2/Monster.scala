@@ -33,7 +33,7 @@ abstract class Monster(
 
   }
 
-  def updateTarget(proposedTarget: LivingEntity) = {
+  def updateTarget(proposedTarget: LivingEntity): Unit = {
     //exemple : on pourra faire des check plus précis
     if(this.target == null) this.target = proposedTarget
     if(this.target.hp < proposedTarget.hp) this.target = proposedTarget

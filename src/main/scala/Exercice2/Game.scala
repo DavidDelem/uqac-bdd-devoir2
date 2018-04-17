@@ -30,8 +30,8 @@ class Game extends Serializable {
 
     System.out.println("------------- mergeMsg -------------")
 
-    (monster1.asInstanceOf[Monster]).updateTarget(monster2)
-    (monster2.asInstanceOf[Monster]).updateTarget(monster1)
+    monster1.asInstanceOf[Monster].updateTarget(monster2)
+    monster2.asInstanceOf[Monster].updateTarget(monster1)
 
     monster1
   }
