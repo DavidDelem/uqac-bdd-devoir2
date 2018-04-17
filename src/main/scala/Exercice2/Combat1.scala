@@ -15,6 +15,7 @@ object Combat1 extends App {
 
 
   //https://spark.apache.org/docs/2.1.1/graphx-programming-guide.html
+  //https://gist.github.com/mitchi/c78a74685edf6a74813b808acf0906b5
   // Create an RDD for the vertices
   val protagonist: RDD[(VertexId, (LivingEntity))] =
     sc.parallelize(Array(
@@ -37,36 +38,36 @@ object Combat1 extends App {
 
     ))
 
-  val relationships: RDD[Edge[String]] =
+  val relationships: RDD[Edge[Link]] =
     sc.parallelize(Array(
-      Edge(1L, 3L, "enemy"),
-      Edge(1L, 4L, "enemy"),
-      Edge(1L, 5L, "enemy"),
-      Edge(1L, 6L, "enemy"),
-      Edge(1L, 7L, "enemy"),
-      Edge(1L, 8L, "enemy"),
-      Edge(1L, 9L, "enemy"),
-      Edge(1L, 10L, "enemy"),
-      Edge(1L, 11L, "enemy"),
-      Edge(1L, 12L, "enemy"),
-      Edge(1L, 13L, "enemy"),
-      Edge(1L, 14L, "enemy"),
-      Edge(1L, 15L, "enemy"),
-      Edge(1L, 16L, "enemy"),
-      Edge(3L, 1L, "enemy"),
-      Edge(4L, 1L, "enemy"),
-      Edge(5L, 1L, "enemy"),
-      Edge(6L, 1L, "enemy"),
-      Edge(7L, 1L, "enemy"),
-      Edge(8L, 1L, "enemy"),
-      Edge(9L, 1L, "enemy"),
-      Edge(10L, 1L, "enemy"),
-      Edge(11L, 1L, "enemy"),
-      Edge(12L, 1L, "enemy"),
-      Edge(13L, 1L, "enemy"),
-      Edge(14L, 1L, "enemy"),
-      Edge(15L, 1L, "enemy"),
-      Edge(16L, 1L, "enemy")
+      Edge(1L, 3L, new Link("enemy", 200)),
+      Edge(1L, 4L, new Link("enemy", 200)),
+      Edge(1L, 5L, new Link("enemy", 200)),
+      Edge(1L, 6L, new Link("enemy", 200)),
+      Edge(1L, 7L, new Link("enemy", 200)),
+      Edge(1L, 8L, new Link("enemy", 200)),
+      Edge(1L, 9L, new Link("enemy", 200)),
+      Edge(1L, 10L, new Link("enemy", 200)),
+      Edge(1L, 11L, new Link("enemy", 200)),
+      Edge(1L, 12L, new Link("enemy", 200)),
+      Edge(1L, 13L, new Link("enemy", 200)),
+      Edge(1L, 14L, new Link("enemy", 200)),
+      Edge(1L, 15L, new Link("enemy", 200)),
+      Edge(1L, 16L, new Link("enemy", 200)),
+      Edge(3L, 1L, new Link("enemy", 200)),
+      Edge(4L, 1L, new Link("enemy", 200)),
+      Edge(5L, 1L, new Link("enemy", 200)),
+      Edge(6L, 1L, new Link("enemy", 200)),
+      Edge(7L, 1L, new Link("enemy", 200)),
+      Edge(8L, 1L, new Link("enemy", 200)),
+      Edge(9L, 1L, new Link("enemy", 200)),
+      Edge(10L, 1L, new Link("enemy", 200)),
+      Edge(11L, 1L, new Link("enemy", 200)),
+      Edge(12L, 1L, new Link("enemy", 200)),
+      Edge(13L, 1L, new Link("enemy", 200)),
+      Edge(14L, 1L, new Link("enemy", 200)),
+      Edge(15L, 1L, new Link("enemy", 200)),
+      Edge(16L, 1L, new Link("enemy", 200))
     ))
 
   // Build the initial Graph
@@ -74,7 +75,10 @@ object Combat1 extends App {
 
   val facts: RDD[String] =
     graph.triplets.map(triplet =>
-      triplet.srcAttr.getName + " is the " + triplet.attr + " of " + triplet.dstAttr.getName)
+      triplet.srcAttr.getName + " is the " + triplet.attr.getRelation + " of " + triplet.dstAttr.getName)
   facts.collect.foreach(println(_))
+
+  val algoFight = new Game()
+  val resultsFight = algoFight.execute(graph, sc, 30)
 
 }
