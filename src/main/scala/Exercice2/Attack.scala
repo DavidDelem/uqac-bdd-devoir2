@@ -6,7 +6,7 @@ class Attack(
               var maxAccuracy: Int,
               var damages: List[Int],
               var minDistance: Int
-            ){
+            ) extends Serializable {
 
   /*var name: String = ""
   var minAccuracy: Int = 0
