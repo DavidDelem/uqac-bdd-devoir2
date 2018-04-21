@@ -81,6 +81,7 @@ La deuxiéme étape consiste à réaliser ces attaques et faire perdre le nombre
 - Dans le deuxiéme AgregateMessages, on fait le calcul des domages pour chaque monstre (principe du map reduce)
 - Dans le deuxiéme joinVertixes, on fait perdre les HP à chaque monstre (pour cela, on créé une nouvelle instance du monstre avec les nouveaux HP, qu'on retourne).
 
+Enfin, nous faisons un filter suivi d'un count pour calculer le nombre d'enemis encore vivants et le nombre d'alliés encore vivants sur le graphe. Si il reste 0 énemis: Pito est sauvé, si il reste 0 alliés: Pito à perdu... Sinon, on continue la boucle.
+
 ---
 <h4>Combat 2. Les Orcs et le dragon vert attaquent le village de Pito</h4>
-
