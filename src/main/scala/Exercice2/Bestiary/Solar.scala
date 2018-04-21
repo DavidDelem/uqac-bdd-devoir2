@@ -16,5 +16,4 @@ class Solar (position: Position, id: Int)
     id,
     "GoodGuys"
   ){
-
 }
