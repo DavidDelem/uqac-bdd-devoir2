@@ -1,8 +1,8 @@
 package Exercice2.Combat1
 
 import Exercice2.Bestiary.{DoubleAxeFury, OrcWorgRider, Solar, _}
+import Exercice2.{Link, LivingEntity, LivingEntityPrototype}
 import Exercice2.Utils.GraphConsole
-import Exercice2.{Link, LivingEntity, Monster}
 import org.apache.spark.SparkContext
 import org.apache.spark.graphx.{EdgeContext, Graph, TripletFields}
 
@@ -18,17 +18,17 @@ class Game extends Serializable {
 
   def mergeTargetMsg(monster1: LivingEntity, monster2: LivingEntity): LivingEntity = {
 
-    if(monster1.asInstanceOf[Monster].hp <= monster2.asInstanceOf[Monster].hp && monster1.asInstanceOf[Monster].hp > 0) monster1
+    if(monster1.hp <= monster2.hp && monster1.hp > 0) monster1
     else monster2
   }
 
   def sendDamageMsg(triplet: EdgeContext[LivingEntity, Link, Int]) {
 
-    if(triplet.srcAttr.asInstanceOf[Monster].target.id == triplet.dstAttr.id) {
-      triplet.sendToDst(triplet.srcAttr.asInstanceOf[Monster].attackTarget())
+    if(triplet.srcAttr.target.id == triplet.dstAttr.id) {
+      triplet.sendToDst(triplet.srcAttr.attackTarget())
     }
-    if(triplet.dstAttr.asInstanceOf[Monster].target.id == triplet.srcAttr.id) {
-      triplet.sendToSrc(triplet.dstAttr.asInstanceOf[Monster].attackTarget())
+    if(triplet.dstAttr.target.id == triplet.srcAttr.id) {
+      triplet.sendToSrc(triplet.dstAttr.attackTarget())
     }
   }
 
@@ -67,36 +67,9 @@ class Game extends Serializable {
 
           (vid, fighter, target) => {
 
-            fighter match {
-              case brutalWarlord: BrutalWarlord =>{
-                var newBrutalWarlord = new BrutalWarlord(brutalWarlord.position, brutalWarlord.id)
-                newBrutalWarlord.target = target
-                newBrutalWarlord.hp = fighter.hp
-                newBrutalWarlord
-              }
-              case doubleAxeFury: DoubleAxeFury =>{
-                var newDoubleAxeFury = new DoubleAxeFury(doubleAxeFury.position, doubleAxeFury.id)
-                newDoubleAxeFury.target = target
-                newDoubleAxeFury.hp = fighter.hp
-                newDoubleAxeFury
-              }
-              case orcWorgRider: OrcWorgRider =>{
-                var newOrcWorgRider = new OrcWorgRider(orcWorgRider.position, orcWorgRider.id)
-                newOrcWorgRider.target = target
-                newOrcWorgRider.hp = fighter.hp
-                newOrcWorgRider
-              }
-              case solar: Solar =>{
-                var newSolar = new Solar(solar.position, solar.id)
-                newSolar.target = target
-                newSolar.hp = fighter.hp
-                newSolar
-              }
-              case _ => {
-                fighter
-              }
-            }
-
+            var newFighter = LivingEntityPrototype.create(fighter)
+            newFighter.target = target
+            newFighter
           }
         }
 
@@ -116,40 +89,9 @@ class Game extends Serializable {
 
           (vid, damageReceiver, damages) => {
 
-            damageReceiver match {
-              case brutalWarlord: BrutalWarlord =>{
-                var newBrutalWarlord = new BrutalWarlord(brutalWarlord.position, brutalWarlord.id)
-                newBrutalWarlord.target = brutalWarlord.target
-                newBrutalWarlord.hp = brutalWarlord.hp
-                newBrutalWarlord.takeDamage(damages)
-                newBrutalWarlord
-              }
-              case doubleAxeFury: DoubleAxeFury =>{
-                var newDoubleAxeFury = new DoubleAxeFury(doubleAxeFury.position, doubleAxeFury.id)
-                newDoubleAxeFury.target = doubleAxeFury.target
-                newDoubleAxeFury.hp = doubleAxeFury.hp
-                newDoubleAxeFury.takeDamage(damages)
-                newDoubleAxeFury
-              }
-              case orcWorgRider: OrcWorgRider =>{
-                var newOrcWorgRider = new OrcWorgRider(orcWorgRider.position, orcWorgRider.id)
-                newOrcWorgRider.target = orcWorgRider.target
-                newOrcWorgRider.hp = orcWorgRider.hp
-                newOrcWorgRider.takeDamage(damages)
-                newOrcWorgRider
-              }
-              case solar: Solar =>{
-                var newSolar = new Solar(solar.position, solar.id)
-                newSolar.target = solar.target
-                newSolar.hp = solar.hp
-                newSolar.takeDamage(damages)
-                newSolar
-              }
-              case _ => {
-                damageReceiver
-              }
-            }
-
+            var newDamageReceiver = LivingEntityPrototype.create(damageReceiver)
+            newDamageReceiver.takeDamage(damages)
+            newDamageReceiver
           }
         }
 
