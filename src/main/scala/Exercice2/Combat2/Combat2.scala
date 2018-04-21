@@ -1,7 +1,6 @@
 package Exercice2.Combat2
 
-import Exercice2.Bestiary.{_}
-import Exercice2.Combat1.Combat1.sc
+import Exercice2.Bestiary._
 import Exercice2.{Link, LivingEntity}
 import Exercice2.Utils.Position
 import org.apache.spark.graphx.{Edge, VertexId}
@@ -17,8 +16,8 @@ object Combat2 extends App {
   val sc = new SparkContext(conf)
   sc.setLogLevel("ERROR")
 
-  var i:Long = 1;
-  val protagonistBuffer: ArrayBuffer[(VertexId, LivingEntity)] = ArrayBuffer();
+  var i:Long = 1
+  val protagonistBuffer: ArrayBuffer[(VertexId, LivingEntity)] = ArrayBuffer()
 
   for (i <- 1 to 1) protagonistBuffer += ((i, new Solar(new Position(0, 0), i.toInt)))
   for (i <- 2 to 3) protagonistBuffer += ((i, new Planetar(new Position(0, 50), i.toInt)))
@@ -28,7 +27,7 @@ object Combat2 extends App {
   for (i <- 12 to 211) protagonistBuffer += ((i, new GreataxeOrc(new Position(0, 50), i.toInt)))
   for (i <- 212 to 221) protagonistBuffer += ((i, new AngelSlayer(new Position(0, 50), i.toInt)))
 
-  val relationshipsBuffer: ArrayBuffer[Edge[Link]] = ArrayBuffer();
+  val relationshipsBuffer: ArrayBuffer[Edge[Link]] = ArrayBuffer()
 
   for (protagonist1 <- protagonistBuffer) {
     for (protagonist2 <- protagonistBuffer) {
