@@ -1,6 +1,7 @@
 package Exercice2
 
 import Exercice2.Utils.Position
+import org.apache.spark.graphx.VertexId
 
 abstract class Monster(
                         name: String,
@@ -11,35 +12,48 @@ abstract class Monster(
                         var speeds: List[(String, Int)] = null,
                         var melee: Attack = null,
                         var ranged: Attack = null,
+                        id:Int,
+                        team: String,
                         var target: LivingEntity = null)
   extends LivingEntity(
     name,
     hp,
     armor,
-    position) {
+    position,
+    id,
+    team) {
 
 
 
-  def attack(target: LivingEntity, distance: Double) : Unit = {
+  def attackTarget() : Int = {
 
     var attack: Attack = null
+    val distance = this.position.distance(target.position)
 
     if(distance <= melee.minDistance) attack = melee
     else if(distance <= ranged.minDistance) attack = ranged
-    else return
+    else return 0
 
     val damage = attack.getDamage
-    if(damage >= target.armor) target.takeDamage(damage)
+    if(damage >= target.armor) damage
+    else 0
 
   }
 
-  def updateTarget(proposedTarget: LivingEntity): Unit = {
-    //exemple : on pourra faire des check plus précis
-    if(this.target == null) this.target = proposedTarget
-    if(this.target.hp < proposedTarget.hp) this.target = proposedTarget
+//  def updateTarget(proposedTarget: LivingEntity): Unit = {
+//
+//    println(proposedTarget)
+//
+//    //exemple : on pourra faire des check plus précis
+//    if(this.target == null ||
+//      (target.hp == 0 && proposedTarget.hp > 0)  ||
+//      (proposedTarget.hp < this.target.hp)
+//    ){
+//      this.target = proposedTarget
+//    }
+//
+//  }
 
-
-  }
   override def toString: String = "Name : " + name + ", HP : " + hp + ", Armor : " + armor + ", Regeneration : " + regeneration + ", Speeds : " + speeds
 
 }

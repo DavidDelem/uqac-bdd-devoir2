@@ -2,7 +2,7 @@ package Exercice2
 
 import Exercice2.Utils.Position
 
-class LivingEntity (var name: String = "", var hp: Int = 0, var armor: Int = 0, var position: Position = new Position()) extends Serializable {
+class LivingEntity (var name: String = "", var hp: Int = 0, var armor: Int = 0, var position: Position = new Position(), var id:Int = 0, var team:String = "") extends Serializable {
 
   def takeDamage(amount: Int): Unit = {
     this.hp -= amount

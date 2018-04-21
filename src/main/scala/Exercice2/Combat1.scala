@@ -19,56 +19,41 @@ object Combat1 extends App {
   // Create an RDD for the vertices
   val protagonist: RDD[(VertexId, (LivingEntity))] =
     sc.parallelize(Array(
-      (1L, new Solar(new Position(0, 0))),
-      (2L, new Pito(new Position(-10, 0))),
-      (3L, new OrcWorgRider(new Position(0, 200))),
-      (4L, new OrcWorgRider(new Position(5, 200))),
-      (5L, new OrcWorgRider(new Position(10, 200))),
-      (6L, new OrcWorgRider(new Position(15, 200))),
-      (7L, new OrcWorgRider(new Position(20, 200))),
-      (8L, new OrcWorgRider(new Position(25, 200))),
-      (9L, new OrcWorgRider(new Position(30, 200))),
-      (10L, new OrcWorgRider(new Position(-5, 200))),
-      (11L, new OrcWorgRider(new Position(-10, 200))),
-      (12L, new BrutalWarlord(new Position(-15, 200))),
-      (13L, new DoubleAxeFury(new Position(-20, 200))),
-      (14L, new DoubleAxeFury(new Position(0, 205))),
-      (15L, new DoubleAxeFury(new Position(-5, 205))),
-      (16L, new DoubleAxeFury(new Position(5, 205)))
+      (1L, new Solar(new Position(0, 0), 1)),
+      (3L, new OrcWorgRider(new Position(0, 50), 3)),
+      (4L, new OrcWorgRider(new Position(5, 50), 4)),
+      (5L, new OrcWorgRider(new Position(10, 50), 5)),
+      (6L, new OrcWorgRider(new Position(15, 50), 6)),
+      (7L, new OrcWorgRider(new Position(20, 50), 7)),
+      (8L, new OrcWorgRider(new Position(25, 50), 8)),
+      (9L, new OrcWorgRider(new Position(30, 50), 9)),
+      (10L, new OrcWorgRider(new Position(-5, 50), 10)),
+      (11L, new OrcWorgRider(new Position(-10, 50), 11)),
+      (12L, new BrutalWarlord(new Position(-15, 50), 12)),
+      (13L, new DoubleAxeFury(new Position(-20, 50), 13)),
+      (14L, new DoubleAxeFury(new Position(0, 50), 14)),
+      (15L, new DoubleAxeFury(new Position(-5, 50), 15)),
+      (16L, new DoubleAxeFury(new Position(5, 50), 16))
 
     ))
-//
+
+
   val relationships: RDD[Edge[Link]] =
     sc.parallelize(Array(
-      Edge(1L, 2L, new Link("friend")),
-      Edge(1L, 12L, new Link("enemy")),
+      Edge(1L, 3L, new Link("enemy")),
       Edge(1L, 4L, new Link("enemy")),
+      Edge(1L, 5L, new Link("enemy")),
+      Edge(1L, 6L, new Link("enemy")),
+      Edge(1L, 7L, new Link("enemy")),
+      Edge(1L, 8L, new Link("enemy")),
+      Edge(1L, 9L, new Link("enemy")),
+      Edge(1L, 10L, new Link("enemy")),
+      Edge(1L, 11L, new Link("enemy")),
+      Edge(1L, 12L, new Link("enemy")),
+      Edge(1L, 13L, new Link("enemy")),
+      Edge(1L, 14L, new Link("enemy")),
+      Edge(1L, 15L, new Link("enemy")),
       Edge(1L, 16L, new Link("enemy"))
-////      Edge(1L, 6L, new Link("enemy", 200)),
-////      Edge(1L, 7L, new Link("enemy", 200)),
-////      Edge(1L, 8L, new Link("enemy", 200)),
-////      Edge(1L, 9L, new Link("enemy", 200)),
-////      Edge(1L, 10L, new Link("enemy", 200)),
-////      Edge(1L, 11L, new Link("enemy", 200)),
-////      Edge(1L, 12L, new Link("enemy", 200)),
-////      Edge(1L, 13L, new Link("enemy", 200)),
-////      Edge(1L, 14L, new Link("enemy", 200)),
-////      Edge(1L, 15L, new Link("enemy", 200)),
-////      Edge(1L, 16L, new Link("enemy", 200))
-////      Edge(3L, 1L, new Link("enemy", 200)),
-////      Edge(4L, 1L, new Link("enemy", 200)),
-////      Edge(5L, 1L, new Link("enemy", 200)),
-////      Edge(6L, 1L, new Link("enemy", 200)),
-////      Edge(7L, 1L, new Link("enemy", 200)),
-////      Edge(8L, 1L, new Link("enemy", 200)),
-////      Edge(9L, 1L, new Link("enemy", 200)),
-////      Edge(10L, 1L, new Link("enemy", 200)),
-////      Edge(11L, 1L, new Link("enemy", 200)),
-////      Edge(12L, 1L, new Link("enemy", 200)),
-////      Edge(13L, 1L, new Link("enemy", 200)),
-////      Edge(14L, 1L, new Link("enemy", 200)),
-////      Edge(15L, 1L, new Link("enemy", 200)),
-////      Edge(16L, 1L, new Link("enemy", 200))
     ))
 
   // Build the initial Graph
@@ -80,6 +65,6 @@ object Combat1 extends App {
 //  facts.collect.foreach(println(_))
 
   val algoFight = new Game()
-  val resultsFight = algoFight.execute(graph, sc, 1)
+  val resultsFight = algoFight.execute(graph, sc, 100)
 
 }
