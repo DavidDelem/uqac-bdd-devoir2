@@ -15,7 +15,6 @@ class Solar (position: Position, id: Int)
     new Attack("+5 composite longbow", 16, 20, List(31, 26, 21, 16), 110),
     id,
     "GoodGuys"
-  )
-{
+  ){
 
 }

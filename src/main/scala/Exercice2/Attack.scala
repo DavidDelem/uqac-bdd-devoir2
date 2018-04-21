@@ -8,13 +8,6 @@ class Attack(
               var minDistance: Int
             ) extends Serializable {
 
-  /*var name: String = ""
-  var minAccuracy: Int = 0
-  var maxAccuracy: Int = 0
-  var damages: List[Int] =  List.empty[Int]
-  var damageThreshold: Int = 0
-  var minDistance: Int = 0*/
-
   private var currentIndexDamage: Int = 0
 
   def getDamage : Int = {

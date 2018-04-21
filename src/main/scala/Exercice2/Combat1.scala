@@ -37,7 +37,6 @@ object Combat1 extends App {
 
     ))
 
-
   val relationships: RDD[Edge[Link]] =
     sc.parallelize(Array(
       Edge(1L, 3L, new Link("enemy")),
@@ -59,12 +58,7 @@ object Combat1 extends App {
   // Build the initial Graph
   val graph = Graph(protagonist, relationships)
 
-//  val facts: RDD[String] =
-//    graph.triplets.map(triplet =>
-//      triplet.srcAttr.getName + " is the " + triplet.attr.getRelation + " of " + triplet.dstAttr.getName)
-//  facts.collect.foreach(println(_))
-
-  val algoFight = new Game()
-  val resultsFight = algoFight.execute(graph, sc, 100)
+  val game = new Game()
+  val resultsFight = game.execute(graph, sc, 100)
 
 }
