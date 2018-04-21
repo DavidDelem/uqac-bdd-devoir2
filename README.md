@@ -45,6 +45,7 @@ Bonus tous les sorts: <i> chemainfichier html ou on les a save</i><br>
 
 <b>Ce qu'on a fait:</b><br>
 Nous avons créé une batch view permettant à Pito de visualiser rapidement les créatures qui peuvent le tirer d’affaire grâce à un reduceByKey. Le résultat est le suivant:
+
 ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) `#f03c15` CAPTURE D’ECRAN DES SORTS DE HEALING ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) `#f03c15` 
 
 Nous l’avons également fait pour tous les sorts (bonus) en faisant un groupByKey. Voici une partie des résultats:
