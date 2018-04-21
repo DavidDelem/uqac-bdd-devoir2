@@ -1,9 +1,10 @@
-package Exercice2
+package Exercice2.Combat1
 
 import Exercice2.Bestiary.{DoubleAxeFury, OrcWorgRider, Solar, _}
-import Exercice2.Utils.{GraphConsole, Position}
+import Exercice2.Utils.GraphConsole
+import Exercice2.{Link, LivingEntity, Monster}
 import org.apache.spark.SparkContext
-import org.apache.spark.graphx.{EdgeContext, Graph, TripletFields, VertexId}
+import org.apache.spark.graphx.{EdgeContext, Graph, TripletFields}
 
 class Game extends Serializable {
 

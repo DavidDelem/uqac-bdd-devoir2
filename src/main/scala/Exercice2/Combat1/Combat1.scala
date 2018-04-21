@@ -1,12 +1,13 @@
-package Exercice2
+package Exercice2.Combat1
 
 import Exercice2.Bestiary._
 import Exercice2.Utils.Position
+import Exercice2.{Link, LivingEntity}
 import org.apache.spark.graphx.{Edge, Graph, VertexId}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
-object Combat1 extends App {
+object Combat1 extends App  {
 
   val appname = "Devoir 2 - Exercice 2 - Combat 1. Solar vs Éclaireurs Orcs"
   val master = "local"
