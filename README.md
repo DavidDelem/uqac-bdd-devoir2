@@ -3,6 +3,7 @@
 <h2>Rapport du devoir 2 de Bases de données réparties - Hiver 2018</h2>
 <b>David Delemotte, Paul Michaud, Rénald Morice, Loïc Bothorel</b>
 
+Ce rapport explique et montre les résultats du travail réalisé dans les deux exercices du devoir 2.
 
 ---
 
@@ -15,8 +16,21 @@
 `Fichiers` &nbsp;
 Crawler: <i>crawlers/crawler.py</i> &nbsp;&nbsp; - &nbsp;&nbsp; Json obtenu: <i>crawlers/allMonsters.json</i><br>
 
-`Ce qu'on a fait:` <br>Nous avons réalisé le crawler en Python puis stocké les données au format JSON (voir le dossier crawlers).
-
+`Ce qu'on a fait:` <br>Nous avons réalisé le crawler en Python en parcourant les bestiaires de paizo.com, puis nous avons stocké les données au format JSON dans le dossier <i>crawlers</i>. Il contient plus de 1400 monstres ! En voici un petit aperçu:
+```json
+[
+    {
+        "name": "Seaweed Siren",
+        "spells": [
+            "shatter",
+            "charm monster",
+            "confusion",
+            "bestow curse"
+        ]
+    },
+    ...
+]
+```
 ---
 <h4>Partie 2</h4>
 
@@ -24,8 +38,7 @@ Crawler: <i>crawlers/crawler.py</i> &nbsp;&nbsp; - &nbsp;&nbsp; Json obtenu: <i>
 Code scala: <i>src/main/scala/Exercice1</i><br>
 
 `Ce qu'on a fait`<br>
-Nous avons mis les données crawlées dans un RDD Spark pour que toutes les opérations puissent être parallélisées entre nos 4 machines. Pour cela, on défini un Master et des Slaves (les 3 autres). Quelqu'un lance le master puis les Slaves font la commande suivante pour le rejoindre: <i>./spark-class org.apache.spark.deploy.worker.Worker spark://IP_MASTER:PORT</i>. Depuis l'interface on peut voir que les slaves ont bien réussi à rejoindre le master, on voit aussi la running application et la conso de chaque worker:
-
+Nous avons mis les données crawlées dans un RDD Spark pour que toutes les opérations puissent être parallélisées entre nos 4 machines. Pour cela, on défini un Master et des Slaves, quelqu'un lance le master puis les Slaves font la commande suivante pour le rejoindre: <i>./spark-class org.apache.spark.deploy.worker.Worker spark://IP_MASTER:PORT</i>. Depuis l'interface on peut voir que les slaves ont bien réussi à rejoindre le master et la running application pour lesquelles les opérations sont parallélisées:
 <p align="center">
   <img src="_imgreadme/cluster.PNG" width="700px"/>
 </p>
@@ -40,13 +53,13 @@ Résultat sorts de healing: <i>src/main/scala/Exercice1/batchViewHealSpellMonste
 Résultat bonus tous les sorts: <i>src/main/scala/Exercice1/batchViewSpellMonsters.html</i><br>
 
 `Ce qu'on a fait`<br>
-Nous avons créé une batch view permettant à Pito de visualiser rapidement les créatures qui peuvent le tirer d’affaire grâce à un reduceByKey. C'est à dire tout les sorts de healing. Le résultat est le suivant (sort | monstres associés):
+Nous avons créé une batch view permettant à Pito de visualiser rapidement les créatures qui peuvent le tirer d’affaire grâce à un reduceByKey. C'est à dire tout les sorts de healing. Le résultat est le suivant:
 
 <p align="center">
   <img src="_imgreadme/sortshealing.PNG" width="700px"/>
 </p>
 
-Nous l’avons également fait pour tous les sorts (bonus) en faisant un groupByKey. Voici une petite partie du résultat, vous pouvez consulter le fichier html complet dans le dossier de l'exercice 1.
+Nous l’avons également fait pour tous les sorts (bonus) en faisant un groupByKey. Voici une petite partie du résultat, vous pouvez consulter le fichier html complet dans le dossier de l'exercice 1:
 
 <p align="center">
   <img src="_imgreadme/sortsall.PNG" width="700px"/>
@@ -65,11 +78,11 @@ Nous l’avons également fait pour tous les sorts (bonus) en faisant un groupBy
 
 `Ce qu'on a fait`<br>
 
-C'est un combat entre le Solar et les monstres pour protéger Pito, en utilisant GraphX de Spark. Le code spécifique au combat 1 se trouve dans  <i>src/main/scala/Exercice2/Combat1</i>.
+C'est un combat entre le Solar et les monstres pour protéger Pito, en utilisant GraphX de Spark. Le code spécifique au combat 1 se trouve dans  <i>src/main/scala/Exercice2/Combat1</i> et le code partagé des deux combats (comme le bestiaire et les utilitaires) se trouve un niveau plus haut dans <i>src/main/scala/Exercice2</i>.
 
-On commence par créer nos RDD de vertex et de edge dans <i>Combat1.scala</i>, puis on appelle la boucle principale qui se trouve dans <i>Game.scala</i>, voici son fonctionnement: 
+On commence par créer nos RDD de vertex et de edge dans <i>Combat1.scala</i>, puis on appelle la boucle principale qui se trouve dans <i>Game.scala</i>.
 
-On réalise un certain nombre d'itérations (jusqu'à atteindre une condition d'arrêt). Lors de chaque itérations, différentes étapes qui font évoluer le graphe ont lieues.
+Explicons son fonctionnement: on réalise un certain nombre d'itérations. Lors de chaque itération, différentes étapes qui font évoluer le graphe ont lieues.
 
 <b>1. Pour chaque monstre, on choisi et on met à jours la cible à attaquer, de la façon suivante:</b>
 - Dans le premier AgregateMessages, on détermine pour chaque monstre l'énnemi le plus interessant à attaquer.
