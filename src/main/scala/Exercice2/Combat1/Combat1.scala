@@ -15,9 +15,10 @@ object Combat1 extends App  {
   val sc = new SparkContext(conf)
   sc.setLogLevel("ERROR")
 
-  //https://spark.apache.org/docs/2.1.1/graphx-programming-guide.html
-  //https://gist.github.com/mitchi/c78a74685edf6a74813b808acf0906b5
-  // Create an RDD for the vertices
+  // https://spark.apache.org/docs/2.1.1/graphx-programming-guide.html
+  // https://gist.github.com/mitchi/c78a74685edf6a74813b808acf0906b5
+
+  // Création du RDD pour les vertices
   val protagonist: RDD[(VertexId, (LivingEntity))] =
     sc.parallelize(Array(
       (1L, new Solar(new Position(0, 0), 1)),
@@ -38,6 +39,7 @@ object Combat1 extends App  {
 
     ))
 
+  // Création du RDD pour les edges
   val relationships: RDD[Edge[Link]] =
     sc.parallelize(Array(
       Edge(1L, 3L, new Link("enemy")),
@@ -56,9 +58,10 @@ object Combat1 extends App  {
       Edge(1L, 16L, new Link("enemy"))
     ))
 
-  // Build the initial Graph
+  // Construction du graphe initial
   val graph = Graph(protagonist, relationships)
 
+  // Lancement de la bataille
   val game = new Game()
   val resultsFight = game.execute(graph, sc, 100)
 
