@@ -7,8 +7,8 @@ class Position (var x: Double = 0, var y: Double = 0) extends Serializable {
   }
 
   def normalize() : Position = {
-    val distance = distanceToOrigin();
-    var pos = new Position(0,0)
+    val distance = distanceToOrigin()
+    val pos = new Position(0, 0)
 
     if(distance!=0){
       pos.x = this.x/distance

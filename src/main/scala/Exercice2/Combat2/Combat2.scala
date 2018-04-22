@@ -11,7 +11,8 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.collection.mutable.ArrayBuffer
 
-import Exercice2.Utils.Constants;
+import Exercice2.Utils.Constants
+
 object Combat2 extends App {
 
   val appname = "Devoir 2 - Exercice 2 - Combat 1. Solar vs Éclaireurs Orcs"
