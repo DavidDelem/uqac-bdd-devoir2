@@ -1,9 +1,9 @@
 package Exercice2.Combat2
 
 import Exercice2.Bestiary._
-import Exercice2.{Link, LivingEntity}
 import Exercice2.Utils.Position
-import org.apache.spark.graphx.{Edge, VertexId}
+import Exercice2.{Link, LivingEntity}
+import org.apache.spark.graphx.{Edge, Graph, VertexId}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
@@ -47,9 +47,13 @@ object Combat2 extends App {
   }
 
   // Create an RDD for the vertices
-  val protagonist: RDD[(VertexId, (LivingEntity))] =
-    sc.parallelize(protagonistBuffer)
+  val protagonist: RDD[(VertexId, (LivingEntity))] = sc.parallelize(protagonistBuffer)
 
-  val relationships: RDD[Edge[Link]] =
-    sc.parallelize(relationshipsBuffer)
+  val relationships: RDD[Edge[Link]] = sc.parallelize(relationshipsBuffer)
+
+  // Build the initial Graph
+  val graph = Graph(protagonist, relationships)
+
+  val game = new Game()
+  val resultsFight = game.execute(graph, sc, 100)
 }
