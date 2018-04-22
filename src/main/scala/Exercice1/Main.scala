@@ -14,7 +14,7 @@ object Main extends App {
   val appname = "Devoir 2"
   val master = "local"
   val file = "crawlers/allMonsters.json"
-  val conf = new SparkConf().setAppName(appname).setMaster(master)
+  val conf = new SparkConf().setAppName(appname).setMaster("spark://192.168.0.181:7077")
   val sc = new SparkContext(conf)
 
 
