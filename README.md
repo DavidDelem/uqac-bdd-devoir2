@@ -98,8 +98,8 @@ myGraph = Graph(newVerticesMove, myGraph.edges)
 <i>A noter que toutes les fonctions qui regénérent, font les mouvements, calculent les dommages reçus ect... (comme regenerate() et move() ici) se trouvent dans LivingEntity (classe parente de tout les monstres).</i>
 
 <b>2. Pour chaque monstre, on choisi et on met à jours la cible à attaquer, de la façon suivante:</b>
-- Dans le premier AgregateMessages, on détermine pour chaque monstre l'énnemi le plus interessant à attaquer.
-- Dans le premier JoinVertixes, on met à jours le monstre avec la bonne target (pour cela, on créé une nouvelle instance du monstre avec la nouvelle target, qu'on return pour remplacer la précédente, car si on modifie directement le monstre ça n'est pas pris en compte).
+- Dans le AgregateMessages, on détermine pour chaque monstre l'énnemi le plus interessant à attaquer.
+- Dans le JoinVertixes, on met à jours le monstre avec la bonne target (pour cela, on créé une nouvelle instance du bon type de monstre avec la nouvelle target, qu'on return pour remplacer la précédente pour que ce soit pris en compte, d'ou l'utilisation du design pattern Prototype).
 
 ```scala
 val targetMessages = myGraph.aggregateMessages[LivingEntity](
@@ -121,10 +121,10 @@ myGraph = myGraph.joinVertices(targetMessages) {
 
 <i>Détail des fonction sendTargetMsg() et mergeTargetMsg() en bas de la boucle principale.</i>
 
-<b>3. On réalise ces attaques en faisant perdre le nombre correct de HP:</b>
+<b>3. On réalise les attaques en faisant perdre le nombre correct de HP:</b>
 
-- Dans le deuxiéme AgregateMessages, on fait le calcul des domages pour chaque monstre (principe du map reduce)
-- Dans le deuxiéme joinVertixes, on fait perdre les HP à chaque monstre (pour cela, on créé une nouvelle instance du monstre avec les nouveaux HP, qu'on return pour remplacer la précédente, car si on modifie directement le monstre ça n'est pas pris en compte).
+- Dans le AgregateMessages, on fait le calcul des domages pour chaque monstre (principe du map reduce)
+- Dans le joinVertixes, on fait perdre les HP à chaque monstre (pour cela, on créé une nouvelle instance du bon type de monstre avec les nouveaux HP, qu'on return pour remplacer la précédente).
 
 ```scala
 val damageMessages = myGraph.aggregateMessages[Int](
@@ -146,11 +146,17 @@ myGraph = myGraph.joinVertices(damageMessages) {
 <i>Détail des fonction sendDamageMsg() et mergeDamageMsg() en bas de la boucle principale.</i>
 
 <b>4. Le nouvel état du graphe est affichée dans la console.</b>
-- Le nom du monstre (ID, HP, POSITION) --DISTANCE-A-SA-CIBLE--> le monstre qu'il attaque(ID, HP, POSITION)
 
 ```scala
 GraphConsole.printLivingEntityGraphVertices(myGraph)
 ```
+
+- Le nom du monstre (ID, HP, POSITION) --DISTANCE-A-SA-CIBLE--> le monstre qu'il attaque(ID, HP, POSITION)
+
+<p align="center">
+  <img src="_imgreadme/exemple.png" width="800px"/>
+</p>
+
 
 <b>5
     . On vérifie les conditions d'arrêt</b>
@@ -176,7 +182,7 @@ else if(nbGoodGuysAlive == 0){
 Voici le résultat final, la plupart du temps Pito est sauvé car le Solar est trés puissant grâce à son bouclier et sa regénération ! Il faut quand même une quarantaine de rounds pour tuer tout les énemis (les Double Axe Fury sont trés résistants).
 
 <p align="center">
-  <img src="_imgreadme/victoire.PNG" width="700px"/>
+  <img src="_imgreadme/victoire.png" width="800px"/>
 </p>
 
 <h4>Combat 2. Les Orcs et le dragon vert attaquent le village de Pito</h4>

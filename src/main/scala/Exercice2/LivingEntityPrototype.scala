@@ -2,7 +2,6 @@ package Exercice2
 
 import Exercice2.Bestiary._
 
-
 object LivingEntityPrototype {
 
   def create(livingEntity: LivingEntity): LivingEntity ={

@@ -63,6 +63,6 @@ object Combat1 extends App  {
 
   // Lancement de la bataille
   val game = new Game()
-  val resultsFight = game.execute(graph, sc, 100)
+  val resultsFight = game.execute(graph, sc, 2)
 
 }
