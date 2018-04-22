@@ -17,6 +17,8 @@ class Position (var x: Double = 0, var y: Double = 0) extends Serializable {
     pos
   }
 
+
+  override def toString = s"Position($x, $y)"
 }
 
 object Position{
