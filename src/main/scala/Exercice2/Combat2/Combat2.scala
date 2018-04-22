@@ -1,5 +1,7 @@
 package Exercice2.Combat2
 
+import java.lang.Math._
+
 import Exercice2.Bestiary._
 import Exercice2.Utils.Position
 import Exercice2.{Link, LivingEntity}
@@ -9,7 +11,9 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.collection.mutable.ArrayBuffer
 
+import Exercice2.Utils.Constants;
 object Combat2 extends App {
+
   val appname = "Devoir 2 - Exercice 2 - Combat 1. Solar vs Éclaireurs Orcs"
   val master = "local"
   val conf = new SparkConf().setAppName(appname).setMaster(master)
@@ -19,13 +23,140 @@ object Combat2 extends App {
   var i:Long = 1
   val protagonistBuffer: ArrayBuffer[(VertexId, LivingEntity)] = ArrayBuffer()
 
-  for (i <- 1 to 1) protagonistBuffer += ((i, new Solar(new Position(0, 0), i.toInt)))
-  for (i <- 2 to 3) protagonistBuffer += ((i, new Planetar(new Position(0, 50), i.toInt)))
-  for (i <- 4 to 5) protagonistBuffer += ((i, new MovanicDeva(new Position(0, 50), i.toInt)))
-  for (i <- 6 to 10) protagonistBuffer += ((i, new AstralDeva(new Position(0, 50), i.toInt)))
-  for (i <- 11 to 11) protagonistBuffer += ((i, new GreenGreatWyrmDragon(new Position(0, 50), i.toInt)))
-  for (i <- 12 to 211) protagonistBuffer += ((i, new GreataxeOrc(new Position(0, 50), i.toInt)))
-  for (i <- 212 to 221) protagonistBuffer += ((i, new AngelSlayer(new Position(0, 50), i.toInt)))
+  //We put the good guy in circle around the village
+  //Then we put the bad guy in circle around them
+
+  val goodGuyNumber = 10.0
+  val badGuyNumber = 211.0
+  var goodGuyInterval:Double = 360.0/goodGuyNumber
+  var badGuyInterval:Double = 360.0/badGuyNumber
+
+  var goodGuyAngle:Double = 0.0
+  var badGuyAngle:Double = 0.0
+
+  var goodGuyRad:Double = goodGuyAngle * (PI / 180.0)
+  var badGuyRad:Double = badGuyAngle* (PI / 180.0)
+
+  //Solar
+  for (i <- 1 to 1) {
+    protagonistBuffer += ((
+      i,
+      new Solar(
+        new Position(
+          Constants.villagePosition.x + Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
+          Constants.villagePosition.y +  Constants.goodGuyCircleRadius * sin(goodGuyRad)
+        ),
+        i.toInt
+      )
+    ))
+
+    goodGuyAngle += goodGuyInterval
+    goodGuyRad = goodGuyAngle * (PI / 180.0)
+  }
+
+  //2x Planetar
+  for (i <- 2 to 3) {
+    protagonistBuffer += ((
+      i,
+      new Planetar(
+        new Position(
+          Constants.villagePosition.x + Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
+          Constants.villagePosition.y +  Constants.goodGuyCircleRadius * sin(goodGuyRad)
+        ),
+        i.toInt
+      )
+    ))
+
+    goodGuyAngle += goodGuyInterval
+    goodGuyRad = goodGuyAngle * (PI / 180.0)
+  }
+
+  //2x Movanic Deva
+  for (i <- 4 to 5) {
+    protagonistBuffer += ((
+      i,
+      new MovanicDeva(
+        new Position(
+          Constants.villagePosition.x + Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
+          Constants.villagePosition.y +  Constants.goodGuyCircleRadius * sin(goodGuyRad)
+        ),
+        i.toInt
+      )
+    ))
+
+    goodGuyAngle += goodGuyInterval
+    goodGuyRad = goodGuyAngle * (PI / 180.0)
+  }
+
+  //5x Astral Deva
+  for (i <- 6 to 10) {
+    protagonistBuffer += ((
+      i,
+      new AstralDeva(
+        new Position(
+          Constants.villagePosition.x + Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
+          Constants.villagePosition.y +  Constants.goodGuyCircleRadius * sin(goodGuyRad)
+        ),
+        i.toInt
+      )
+    ))
+
+    goodGuyAngle += goodGuyInterval
+    goodGuyRad = goodGuyAngle * (PI / 180.0)
+  }
+
+  //Green Great Wyrm Dragon
+  for (i <- 11 to 11) {
+    protagonistBuffer += ((
+      i,
+      new GreenGreatWyrmDragon(
+        new Position(
+          Constants.villagePosition.x + Constants.badGuyCircleRadius * Math.cos(badGuyRad),
+          Constants.villagePosition.y +  Constants.badGuyCircleRadius * sin(badGuyRad)
+        ),
+        i.toInt
+      )
+    ))
+
+    badGuyAngle += badGuyInterval
+    badGuyRad = badGuyAngle * (PI / 180.0)
+  }
+
+  //200x Orc Barbarians
+  for (i <- 12 to 211) {
+    protagonistBuffer += ((
+      i,
+      new GreataxeOrc(
+        new Position(
+          Constants.villagePosition.x + Constants.badGuyCircleRadius * Math.cos(badGuyRad),
+          Constants.villagePosition.y +  Constants.badGuyCircleRadius * sin(badGuyRad)
+        ),
+        i.toInt
+      )
+    ))
+
+    badGuyAngle += badGuyInterval
+    badGuyRad = badGuyAngle * (PI / 180.0)
+  }
+
+  //10x Angel Slayer
+  for (i <- 212 to 221) {
+    protagonistBuffer += ((
+      i,
+      new AngelSlayer(
+        new Position(
+          Constants.villagePosition.x + Constants.badGuyCircleRadius * Math.cos(badGuyRad),
+          Constants.villagePosition.y +  Constants.badGuyCircleRadius * sin(badGuyRad)
+        ),
+        i.toInt
+      )
+    ))
+
+    badGuyAngle += badGuyInterval
+    badGuyRad = badGuyAngle * (PI / 180.0)
+  }
+
+
 
   val relationshipsBuffer: ArrayBuffer[Edge[Link]] = ArrayBuffer()
 

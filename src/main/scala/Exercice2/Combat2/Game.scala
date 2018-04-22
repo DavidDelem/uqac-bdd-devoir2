@@ -67,7 +67,6 @@ class Game extends Serializable {
           (_, fighter, target) => {
 
             val newFighter = LivingEntityPrototype.create(fighter)
-            newFighter.hp += newFighter.regeneration
             newFighter.target = target
             newFighter
           }
