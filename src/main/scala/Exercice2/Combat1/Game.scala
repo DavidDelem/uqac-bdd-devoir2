@@ -65,9 +65,9 @@ class Game extends Serializable {
 
         myGraph = myGraph.joinVertices(targetMessages) {
 
-          (vid, fighter, target) => {
+          (_, fighter, target) => {
 
-            var newFighter = LivingEntityPrototype.create(fighter)
+            val newFighter = LivingEntityPrototype.create(fighter)
             newFighter.target = target
             newFighter
           }
@@ -87,9 +87,9 @@ class Game extends Serializable {
 
         myGraph = myGraph.joinVertices(damageMessages) {
 
-          (vid, damageReceiver, damages) => {
+          (_, damageReceiver, damages) => {
 
-            var newDamageReceiver = LivingEntityPrototype.create(damageReceiver)
+            val newDamageReceiver = LivingEntityPrototype.create(damageReceiver)
             newDamageReceiver.takeDamage(damages)
             newDamageReceiver
           }
