@@ -83,7 +83,7 @@ class Game extends Serializable {
         GraphConsole.printLivingEntityGraphVertices(myGraph)
 
         // Récupération du nombre d'alliés et ennemis toujours en vie
-        val nbBadGuysAlive = myGraph.vertices.filter{ vertex => {vertex._2.team == "BadGuys" && vertex._2.hp > 0}}.count
+        val nbBadGuysAlive = myGraph.vertices.filter{ vertex => vertex._2.team == "BadGuys" && vertex._2.hp > 0}.count
         val nbGoodGuysAlive = myGraph.vertices.filter{ vertex =>  vertex._2.team == "GoodGuys" && vertex._2.hp > 0}.count
 
         // Conditions d'arrêt: victoire des ennemis ou des alliés
