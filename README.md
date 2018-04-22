@@ -24,25 +24,33 @@ Crawler: <i>crawlers/crawler.py</i> &nbsp;&nbsp; - &nbsp;&nbsp; Json obtenu: <i>
 Code scala: <i>src/main/scala/Exercice1</i><br>
 
 `Ce qu'on a fait`<br>
-Nous avons mis les données crawlées dans un RDD Spark pour que toutes les opérations puissent être parallélisées entre nos 4 machines. Pour cela, on défini un Master et des Slaves. Le Master fait la commande suivante: <i>commande</i>, puis les Slaves font la suivante pour le rejoindre: <i>commande</i>. Voilà le résultat dans la console (1 master et 3 slaves):
+Nous avons mis les données crawlées dans un RDD Spark pour que toutes les opérations puissent être parallélisées entre nos 4 machines (1 master et 3 slaves). Pour cela, on défini un Master et des Slaves. Quelqu'un lance le master puis les Slaves font la commande suivante pour le rejoindre: <i>./spark-class org.apache.spark.deploy.worker.Worker spark://IP_MASTER:PORT</i>. Depuis l'interface on peut voir que les slaves ont bien réussi à rejoindre le master, on voit aussi la running application et la conso de chaque worker:
 
-![#f03c15](https://placehold.it/15/f03c15/000000?text=+) CAPTURE D’ECRAN DE LA CONSOLE [#f03c15](https://placehold.it/15/f03c15/000000?text=+)
+<p align="center">
+  <img src="_imgreadme/cluster.PNG" width="700px"/>
+</p>
 
 ---
 
 <h4>Partie 3</h4>
 
-`Fichiers:`  &nbsp;
-Code scala: <i>src/main/scala/Exercice1</i>  &nbsp;&nbsp; - &nbsp;&nbsp; Sorts de healing: <i>chemain du fichier html ou on les a save</i><br>  &nbsp;&nbsp; - &nbsp;&nbsp; Bonus tous les sorts: <i> chemainfichier html ou on les a save</i><br>
+`Fichiers`  <br>
+Code scala: <i>src/main/scala/Exercice1</i> <br>
+Résultat sorts de healing: <i>src/main/scala/Exercice1/batchViewHealSpellMonsters.html</i><br>
+Résultat bonus tous les sorts: <i>src/main/scala/Exercice1/batchViewSpellMonsters.html</i><br>
 
 `Ce qu'on a fait`<br>
-Nous avons créé une batch view permettant à Pito de visualiser rapidement les créatures qui peuvent le tirer d’affaire grâce à un reduceByKey. Le résultat est le suivant:
+Nous avons créé une batch view permettant à Pito de visualiser rapidement les créatures qui peuvent le tirer d’affaire grâce à un reduceByKey. C'est à dire tout les sorts de healing. Le résultat est le suivant (sort | monstres associés):
 
-![#f03c15](https://placehold.it/15/f03c15/000000?text=+) CAPTURE D’ECRAN DES SORTS DE HEALING ![#f03c15](https://placehold.it/15/f03c15/000000?text=+)
+<p align="center">
+  <img src="_imgreadme/sortshealing.PNG" width="700px"/>
+</p>
 
-Nous l’avons également fait pour tous les sorts (bonus) en faisant un groupByKey. Voici une partie des résultats:
+Nous l’avons également fait pour tous les sorts (bonus) en faisant un groupByKey. Voici une petite partie du résultat, vous pouvez consulter le fichier html complet dans le dossier de l'exercice 1.
 
-![#f03c15](https://placehold.it/15/f03c15/000000?text=+) CAPTURES D’ECRAN PARTIELLE DE TOUS LES SORTS ![#f03c15](https://placehold.it/15/f03c15/000000?text=+)
+<p align="center">
+  <img src="_imgreadme/sortsall.PNG" width="700px"/>
+</p>
 
 ---
 
@@ -90,3 +98,8 @@ On réalise un certain nombre d'itérations (jusqu'à atteindre une condition d'
 `Ce qu'on a fait`<br>
 
 Ce combat reprends les bases du premier, en un peut plus compliqué ! Il y a beaucoup de monstres alors on créé certains RDD à partir d'un array créé avec une boucle for.
+
+
+systéme 3d????
+Travailler avec des vecteurs
+racine carré de la somme de la soustraction au carré de chaque composant
