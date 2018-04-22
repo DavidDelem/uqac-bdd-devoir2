@@ -8,6 +8,7 @@ class OrcWorgRider (position: Position, id: Int)
     id,
     "Orc worg Rider",
     13,
+    13,
     18,
     position,
     "BadGuys",

@@ -8,6 +8,7 @@ class MovanicDeva (position: Position, id: Int)
     id,
     "Movanic Deva",
     126,
+    126,
     24,
     position,
     "GoodGuys",

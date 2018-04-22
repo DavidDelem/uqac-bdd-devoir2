@@ -8,6 +8,7 @@ class Planetar (position: Position, id: Int)
     id,
     name = "Planetar",
     229,
+    229,
     32,
     position,
     "GoodGuys",

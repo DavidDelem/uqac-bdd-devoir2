@@ -8,6 +8,7 @@ class GreenGreatWyrmDragon (position: Position, id: Int)
     id,
     "Green Great Wyrm Dragon",
     391,
+    391,
     37,
     position,
     "BadGuys",

@@ -8,6 +8,7 @@ class AngelSlayer (position: Position, id: Int)
     id,
     "Angel Slayer",
     112,
+    112,
     26,
     position,
     "BadGuys",

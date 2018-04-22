@@ -5,6 +5,7 @@ import Exercice2.Utils.{Constants, Position}
 class LivingEntity (
                      var id:Int = 0,
                      var name: String = "",
+                     var hpmax: Int = 0,
                      var hp: Int = 0,
                      var armor: Int = 0,
                      var position: Position = new Position(),
@@ -16,9 +17,18 @@ class LivingEntity (
                      var target: LivingEntity = null)
   extends Serializable {
 
+  // Perte des HP
+  // Remise à 0 en cas de valeur négative
   def takeDamage(amount: Int): Unit = {
     this.hp -= amount
-    if(this.hp < 0) this.hp = 0
+    if (this.hp < 0) this.hp = 0
+  }
+
+  // Regénération
+  // On s'assure de ne pas dépasser les hp initiaux
+  def regenerate() : Unit = {
+    this.hp = this.hp + this.regeneration
+    if (this.hp > this.hpmax) this.hp = this.hpmax
   }
 
   def attackTarget() : Int = {
@@ -52,6 +62,7 @@ class LivingEntity (
     else new Position(0,0)
   }
 
+  // Mouvements
   def move(){
     val normalizeDirection = computeNormalizedDirection()
     //TODO : use all different speeds
@@ -59,8 +70,6 @@ class LivingEntity (
     this.position.y += normalizeDirection.y * (speeds(0)._2/1000.0) * Constants.sleepMilli
 
   }
-
-
 
   override def toString: String = "Name : " + name + ", HP : " + hp + ", Position : (" + position.x + ", " + position.y + ")"
 

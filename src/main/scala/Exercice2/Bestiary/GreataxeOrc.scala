@@ -8,6 +8,7 @@ class GreataxeOrc  (position: Position, id: Int)
     id,
     "Greataxe Orc",
     42,
+    42,
     15,
     position,
     "BadGuys",

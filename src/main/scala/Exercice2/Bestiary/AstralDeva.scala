@@ -8,6 +8,7 @@ class AstralDeva (position: Position, id: Int)
     id,
     "Astral Deva",
     172,
+    172,
     29,
     position,
     "GoodGuys",

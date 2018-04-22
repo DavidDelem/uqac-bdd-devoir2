@@ -8,6 +8,7 @@ class DoubleAxeFury (position: Position, id: Int)
     id,
     "Double Axe Fury",
     142,
+    142,
     17,
     position,
     "BadGuys",

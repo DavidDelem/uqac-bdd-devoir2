@@ -8,6 +8,7 @@ class BrutalWarlord (position: Position, id: Int)
     id,
     "Brutal Warlord",
     141,
+    141,
     27,
     position,
     "BadGuys",

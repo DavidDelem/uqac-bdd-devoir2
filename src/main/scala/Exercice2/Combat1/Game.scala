@@ -25,14 +25,25 @@ class Game extends Serializable {
         println("================ Battle round : " + roundCounter + " ================")
 
         //--------------------
+        // REGENERATION UPDATE
+        //--------------------
+
+        val newVerticesRegenerate = myGraph.vertices.map(vertex => {
+          vertex._2.regenerate()
+          vertex
+        })
+        myGraph = Graph(newVerticesRegenerate, myGraph.edges)
+
+
+        //--------------------
         // MOVING UPDATE
         //--------------------
 
-        val newVertices = myGraph.vertices.map(vertex => {
+        val newVerticesMove = myGraph.vertices.map(vertex => {
           vertex._2.move()
           vertex
         })
-        myGraph = Graph(newVertices, myGraph.edges)
+        myGraph = Graph(newVerticesMove, myGraph.edges)
 
         //--------------------
         // TARGET UPDATE
