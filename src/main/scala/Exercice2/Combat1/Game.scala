@@ -1,8 +1,7 @@
 package Exercice2.Combat1
 
-import Exercice2.Bestiary.{DoubleAxeFury, OrcWorgRider, Solar, _}
 import Exercice2.{Link, LivingEntity, LivingEntityPrototype}
-import Exercice2.Utils.GraphConsole
+import Exercice2.Utils.{Constants, GraphConsole}
 import org.apache.spark.SparkContext
 import org.apache.spark.graphx.{EdgeContext, Graph, TripletFields}
 
@@ -53,6 +52,17 @@ class Game extends Serializable {
         println("================ Battle round : " + roundCounter + " ================")
 
         //--------------------
+        // MOVING UPDATE
+        //--------------------
+
+
+        val newVertices = myGraph.vertices.map(vertex => {
+          vertex._2.move()
+          vertex
+        })
+        myGraph = Graph(newVertices, myGraph.edges)
+
+        //--------------------
         // TARGET UPDATE
         //--------------------
 
@@ -95,7 +105,7 @@ class Game extends Serializable {
           }
         }
 
-        GraphConsole.printGraph(myGraph)
+        GraphConsole.printLivingEntityGraphVertices(myGraph)
 
         val nbBadGuysAlive = myGraph.vertices.filter{ vertex => {vertex._2.team == "BadGuys" && vertex._2.hp > 0}}.count
         val nbGoodGuysAlive = myGraph.vertices.filter{ vertex =>  vertex._2.team == "GoodGuys" && vertex._2.hp > 0}.count
@@ -111,7 +121,7 @@ class Game extends Serializable {
         }
         else if (roundCounter == maxIterations) return
 
-
+        Thread.sleep(Constants.sleepMilli)
       }
 
     }

@@ -2,7 +2,7 @@ package Exercice2.Utils
 
 object Constants {
   val sleepMilli = 1000
-  val vitessePixelSec = 200
+  val nearTargetRadius: Double = 30.0
 
   //Starting positions
   val villagePosition = new Position(0, 0)

@@ -22,6 +22,7 @@ object LivingEntityPrototype {
       case solar: Solar => newLivingEntity = new Solar(solar.position, solar.id)
     }
 
+    newLivingEntity.position = livingEntity.position
     newLivingEntity.target = livingEntity.target
     newLivingEntity.hp = livingEntity.hp
 

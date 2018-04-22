@@ -12,7 +12,7 @@ class AstralDeva (position: Position, id: Int)
     position,
     "GoodGuys",
     0,
-    List(("ft", 50), ("fly", 100)),
+    List(("ft", 9), ("fly", 18)),
     new Attack("+2 disrupting warhammer", 15, 22, List(26, 21, 16), 5)
   ){
 }

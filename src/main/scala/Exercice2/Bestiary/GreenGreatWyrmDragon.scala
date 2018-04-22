@@ -12,7 +12,7 @@ class GreenGreatWyrmDragon (position: Position, id: Int)
     position,
     "BadGuys",
     0,
-    List(("ft", 40), ("fly", 250), ("swim", 40)),
+    List(("ft", 7), ("fly", 45), ("swim", 7)),
     new Attack("bite", 25, 29, List(33), 5)
   ){
 }

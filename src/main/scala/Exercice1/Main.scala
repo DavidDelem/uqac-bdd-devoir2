@@ -12,7 +12,7 @@ object Main extends App {
   implicit val formats: DefaultFormats.type = DefaultFormats
 
   val appname = "Devoir 2"
-  val master = "local"
+  val master = "spark://192.168.0.181:7077"
   val file = "crawlers/allMonsters.json"
   val conf = new SparkConf().setAppName(appname).setMaster("spark://192.168.0.181:7077")
   val sc = new SparkContext(conf)

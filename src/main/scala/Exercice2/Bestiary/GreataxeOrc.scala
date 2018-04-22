@@ -12,7 +12,7 @@ class GreataxeOrc  (position: Position, id: Int)
     position,
     "BadGuys",
     0,
-    List(("ft", 30)),
+    List(("ft", 5)),
     new Attack("greathaxe", 11, 12, List(11), 5),
     new Attack("throwing haxe", 8, 13, List(5), 110)
   ){

@@ -2,23 +2,23 @@ package Exercice2.Utils
 
 class Position (var x: Double = 0, var y: Double = 0) extends Serializable {
 
-  def distanceToOrigin() : Double = {
+  def getDistance() : Double = {
     Math.sqrt(Math.pow(this.x, 2)+ Math.pow(this.y, 2))
   }
 
   def normalize() : Position = {
-    val distance = distanceToOrigin()
-    val pos = new Position(0, 0)
+    val distance = getDistance()
+    var pos = new Position(0,0)
 
-    if(distance!=0){
+    if(distance != 0){
       pos.x = this.x/distance
       pos.y = this.y/distance
     }
     pos
   }
 
+  override def toString: String = "x : " + x + ", y : " + y
 
-  override def toString = s"Position($x, $y)"
 }
 
 object Position{

@@ -21,20 +21,20 @@ object Combat1 extends App  {
   val protagonist: RDD[(VertexId, (LivingEntity))] =
     sc.parallelize(Array(
       (1L, new Solar(new Position(0, 0), 1)),
-      (3L, new OrcWorgRider(new Position(0, 50), 3)),
-      (4L, new OrcWorgRider(new Position(5, 50), 4)),
-      (5L, new OrcWorgRider(new Position(10, 50), 5)),
-      (6L, new OrcWorgRider(new Position(15, 50), 6)),
-      (7L, new OrcWorgRider(new Position(20, 50), 7)),
-      (8L, new OrcWorgRider(new Position(25, 50), 8)),
-      (9L, new OrcWorgRider(new Position(30, 50), 9)),
-      (10L, new OrcWorgRider(new Position(-5, 50), 10)),
-      (11L, new OrcWorgRider(new Position(-10, 50), 11)),
-      (12L, new BrutalWarlord(new Position(-15, 50), 12)),
-      (13L, new DoubleAxeFury(new Position(-20, 50), 13)),
-      (14L, new DoubleAxeFury(new Position(0, 50), 14)),
-      (15L, new DoubleAxeFury(new Position(-5, 50), 15)),
-      (16L, new DoubleAxeFury(new Position(5, 50), 16))
+      (3L, new OrcWorgRider(new Position(150, 0), 3)),
+      (4L, new OrcWorgRider(new Position(140, 10), 4)),
+      (5L, new OrcWorgRider(new Position(130, 20), 5)),
+      (6L, new OrcWorgRider(new Position(120, 30), 6)),
+      (7L, new OrcWorgRider(new Position(110, 40), 7)),
+      (8L, new OrcWorgRider(new Position(100, 50), 8)),
+      (9L, new OrcWorgRider(new Position(90, 60), 9)),
+      (10L, new OrcWorgRider(new Position(80, 70), 10)),
+      (11L, new OrcWorgRider(new Position(70, 80), 11)),
+      (12L, new BrutalWarlord(new Position(60, 90), 12)),
+      (13L, new DoubleAxeFury(new Position(50, 100), 13)),
+      (14L, new DoubleAxeFury(new Position(40, 110), 14)),
+      (15L, new DoubleAxeFury(new Position(30, 120), 15)),
+      (16L, new DoubleAxeFury(new Position(20, 130), 16))
 
     ))
 
