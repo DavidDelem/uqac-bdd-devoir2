@@ -1,9 +1,15 @@
 package Exercice2.Combat1
 
+import java.io.{File, PrintWriter}
+
 import Exercice2.{Link, LivingEntity, LivingEntityPrototype}
 import Exercice2.Utils.{Constants, GraphConsole}
 import org.apache.spark.SparkContext
-import org.apache.spark.graphx.{EdgeContext, Graph, TripletFields}
+import org.apache.spark.graphx.{EdgeContext, Graph, TripletFields, VertexId}
+import net.liftweb.json._
+import net.liftweb.json.Serialization.write
+
+import scala.collection.mutable.ListBuffer
 
 class Game extends Serializable {
 
@@ -16,6 +22,8 @@ class Game extends Serializable {
     var myGraph = g
     var roundCounter = 0
     val fields = new TripletFields(true, true, true) //join strategy
+    var allRoundsVertices = scala.collection.mutable.ArrayBuffer.empty[Array[(VertexId, LivingEntity)]]
+    implicit val formats = DefaultFormats
 
     def gameLoop(): Unit = {
 
@@ -24,6 +32,25 @@ class Game extends Serializable {
         roundCounter+=1
         println("================ Battle round : " + roundCounter + " ================")
 
+        //----------------------------------------
+        // SAVE RDD STATE FOR GUI (SERIALIZATION)
+        //----------------------------------------
+        //TODO: how to serialize without creating a new LivingEntity ?
+        allRoundsVertices += myGraph.vertices.map(vertex => (
+          vertex._1, new LivingEntity(
+          vertex._2.id,
+          vertex._2.name,
+          vertex._2.hpmax,
+          vertex._2.hp,
+          vertex._2.armor,
+          vertex._2.position,
+          vertex._2.team,
+          vertex._2.regeneration,
+          vertex._2.speeds,
+          vertex._2.melee,
+          vertex._2.ranged,
+          vertex._2.target)
+        )).collect()
 
         //--------------------
         // MOVING + REGENERATE UPDATE
@@ -97,12 +124,19 @@ class Game extends Serializable {
         }
         else if (roundCounter == maxIterations) return
 
-        Thread.sleep(Constants.sleepMilli)
+        //UI handled in another program, no need to temporize
+        //Thread.sleep(Constants.sleepMilli)
       }
 
     }
 
     gameLoop() //execute loop
+
+    //Export roundRDDs JSON
+    val writer = new PrintWriter(new File("livingEntities-Fight1.json"))
+    writer.write(net.liftweb.json.Serialization.write(allRoundsVertices))
+    writer.close()
+
     myGraph //return the result graph
   }
 

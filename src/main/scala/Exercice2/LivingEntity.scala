@@ -2,6 +2,7 @@ package Exercice2
 
 import Exercice2.Utils.{Constants, Position}
 
+@SerialVersionUID(1000L)
 class LivingEntity (
                      var id:Int = 0,
                      var name: String = "",
@@ -66,8 +67,8 @@ class LivingEntity (
   def move(){
     val normalizeDirection = computeNormalizedDirection()
     //TODO : use all different speeds
-    this.position.x += normalizeDirection.x * (speeds(0)._2/1000.0) * Constants.sleepMilli
-    this.position.y += normalizeDirection.y * (speeds(0)._2/1000.0) * Constants.sleepMilli
+    this.position.x += normalizeDirection.x * speeds(0)._2 //(speeds(0)._2/1000.0) * Constants.sleepMilli
+    this.position.y += normalizeDirection.y * speeds(0)._2 //(speeds(0)._2/1000.0) * Constants.sleepMilli
 
   }
 
