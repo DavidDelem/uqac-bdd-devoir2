@@ -46,7 +46,7 @@ object Combat1 extends App  {
       new Solar(
         new Position(
           Constants.villagePosition.x + Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
-          Constants.villagePosition.y +  Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
+          Constants.villagePosition.y + Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
         ),
         i.toInt
       )
@@ -54,6 +54,7 @@ object Combat1 extends App  {
 
     goodGuyAngle += goodGuyInterval
     goodGuyRad = goodGuyAngle * (PI / 180.0)
+
   }
 
   //9x worgs rider
@@ -69,8 +70,8 @@ object Combat1 extends App  {
       )
     ))
 
-    goodGuyAngle += goodGuyInterval
-    goodGuyRad = goodGuyAngle * (PI / 180.0)
+    badGuyAngle += badGuyInterval
+    badGuyRad = badGuyAngle * (PI / 180.0)
   }
 
   //1x warlord
@@ -80,14 +81,14 @@ object Combat1 extends App  {
       new BrutalWarlord(
         new Position(
           Constants.villagePosition.x + Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
-          Constants.villagePosition.y +  Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
+          Constants.villagePosition.y + Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
         ),
         i.toInt
       )
     ))
 
-    goodGuyAngle += goodGuyInterval
-    goodGuyRad = goodGuyAngle * (PI / 180.0)
+    badGuyAngle += badGuyInterval
+    badGuyRad = badGuyAngle * (PI / 180.0)
   }
 
   //4x barbars orc
@@ -97,14 +98,14 @@ object Combat1 extends App  {
       new DoubleAxeFury(
         new Position(
           Constants.villagePosition.x + Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
-          Constants.villagePosition.y +  Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
+          Constants.villagePosition.y + Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
         ),
         i.toInt
       )
     ))
 
-    goodGuyAngle += goodGuyInterval
-    goodGuyRad = goodGuyAngle * (PI / 180.0)
+    badGuyAngle += badGuyInterval
+    badGuyRad = badGuyAngle * (PI / 180.0)
   }
 
 
@@ -174,6 +175,6 @@ object Combat1 extends App  {
 
   // Lancement de la bataille
   val game = new Game()
-  val resultsFight = game.execute(graph, sc, 40)
+  val resultsFight = game.execute(graph, sc, 100)
 
 }
