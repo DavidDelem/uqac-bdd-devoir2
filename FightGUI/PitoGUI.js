@@ -1,40 +1,34 @@
 var milliSecBetweenRound = 1000;
-var zoom = 5;
-var offsetX = 0;
-var offsetY = 0;
+var nbRoundMax = 100;
+var zoom = 2;
+var offsetX = 400;
+var offsetY = 400;
 
 $(function () {
     
     var rounds = [];
-    
-    //Read round files
-    try {
-        
-        alert("TEST");
-        
-        var cpt = 1;
-        
-        while(cpt<2){
-            
-            alert(cpt);
-            
-            
-            $.getJSON('roundJSON/round'+cpt+'.json', function(parsedJson) {
-                rounds.push(parsedJson);
-            });
-            
-            cpt++;
-        }
-        
-    }
-    catch(err) {
 
-    } finally{
-        
-        if(rounds.length > 0) processRound(0);
-        else alert("No rounds !");
-    }
-      
+		
+		var cpt = 1;
+		var launched = false;
+		
+		while(cpt<nbRoundMax){
+
+				$.getJSON('roundJSON/round'+cpt+'.json'/*, function(parsedJson) {
+						alert("TEST");
+						rounds.push(parsedJson);
+				}*/).done(function(data) {
+						rounds.push(data);
+				}).error(function(error) {
+						if(rounds.length > 0 && !launched){
+							launched = true;
+							processRound(0);
+						}
+				});
+
+				cpt++;
+		}
+
     
     function processRound(numRound){
         

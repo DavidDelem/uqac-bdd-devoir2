@@ -44,8 +44,8 @@ object Combat2 extends App {
       i,
       new Solar(
         new Position(
-          Constants.villagePosition.x + Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
-          Constants.villagePosition.y +  Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
+          Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
+          Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
         ),
         i.toInt
       )
@@ -61,8 +61,8 @@ object Combat2 extends App {
       i,
       new Planetar(
         new Position(
-          Constants.villagePosition.x + Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
-          Constants.villagePosition.y +  Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
+          Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
+          Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
         ),
         i.toInt
       )
@@ -78,8 +78,8 @@ object Combat2 extends App {
       i,
       new MovanicDeva(
         new Position(
-          Constants.villagePosition.x + Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
-          Constants.villagePosition.y +  Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
+          Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
+          Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
         ),
         i.toInt
       )
@@ -95,8 +95,8 @@ object Combat2 extends App {
       i,
       new AstralDeva(
         new Position(
-          Constants.villagePosition.x + Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
-          Constants.villagePosition.y +  Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
+          Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
+          Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
         ),
         i.toInt
       )
@@ -112,8 +112,8 @@ object Combat2 extends App {
       i,
       new GreenGreatWyrmDragon(
         new Position(
-          Constants.villagePosition.x + Constants.badGuyCircleRadius * Math.cos(badGuyRad),
-          Constants.villagePosition.y +  Constants.badGuyCircleRadius * Math.sin(badGuyRad)
+          Constants.badGuyCircleRadius * Math.cos(badGuyRad),
+          Constants.badGuyCircleRadius * Math.sin(badGuyRad)
         ),
         i.toInt
       )
@@ -129,8 +129,8 @@ object Combat2 extends App {
       i,
       new GreataxeOrc(
         new Position(
-          Constants.villagePosition.x + Constants.badGuyCircleRadius * Math.cos(badGuyRad),
-          Constants.villagePosition.y +  Constants.badGuyCircleRadius * Math.sin(badGuyRad)
+          Constants.badGuyCircleRadius * Math.cos(badGuyRad),
+          Constants.badGuyCircleRadius * Math.sin(badGuyRad)
         ),
         i.toInt
       )
@@ -146,8 +146,8 @@ object Combat2 extends App {
       i,
       new AngelSlayer(
         new Position(
-          Constants.villagePosition.x + Constants.badGuyCircleRadius * Math.cos(badGuyRad),
-          Constants.villagePosition.y +  Constants.badGuyCircleRadius * Math.sin(badGuyRad)
+          Constants.badGuyCircleRadius * Math.cos(badGuyRad),
+          Constants.badGuyCircleRadius * Math.sin(badGuyRad)
         ),
         i.toInt
       )

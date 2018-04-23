@@ -3,10 +3,11 @@ package Exercice2.Combat2
 import java.io.{File, PrintWriter}
 
 import Exercice2.{Link, LivingEntity, LivingEntityPrototype}
-import Exercice2.Utils.{GraphConsole, Position}
-import net.liftweb.json.DefaultFormats
+import Exercice2.Utils.Position
 import org.apache.spark.SparkContext
-import org.apache.spark.graphx.{EdgeContext, Graph, TripletFields, VertexId}
+import org.apache.spark.graphx.{EdgeContext, Graph, TripletFields}
+import net.liftweb.json._
+import org.apache.commons.io.FileUtils
 
 class Game extends Serializable {
 
@@ -22,6 +23,9 @@ class Game extends Serializable {
     implicit val formats = DefaultFormats
 
     def gameLoop(): Unit = {
+
+      FileUtils.deleteDirectory(new File("FightGUI/fight2/roundJSON/"))
+      val newDir = new File("FightGUI/fight2/roundJSON/").mkdirs()
 
       while (true) {
 
@@ -122,9 +126,6 @@ class Game extends Serializable {
         // Récupération du nombre d'alliés et ennemis toujours en vie
         val nbBadGuysAlive = myGraph.vertices.filter{ vertex => vertex._2.team == "BadGuys" && vertex._2.hp > 0}.count
         val nbGoodGuysAlive = myGraph.vertices.filter{ vertex =>  vertex._2.team == "GoodGuys" && vertex._2.hp > 0}.count
-
-        System.out.println("nbBadGuysAlive : " + nbBadGuysAlive)
-        System.out.println("nbGoodGuysAlive : " + nbGoodGuysAlive)
 
         // Conditions d'arrêt: victoire des ennemis ou des alliés
         if(nbBadGuysAlive == 0){

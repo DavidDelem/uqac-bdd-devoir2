@@ -3,13 +3,11 @@ package Exercice2.Combat1
 import java.io.{File, PrintWriter}
 
 import Exercice2.{Link, LivingEntity, LivingEntityPrototype}
-import Exercice2.Utils.{Constants, GraphConsole, Position}
+import Exercice2.Utils.Position
 import org.apache.spark.SparkContext
-import org.apache.spark.graphx.{EdgeContext, Graph, TripletFields, VertexId}
+import org.apache.spark.graphx.{EdgeContext, Graph, TripletFields}
 import net.liftweb.json._
-import net.liftweb.json.Serialization.write
-
-import scala.collection.mutable.ListBuffer
+import org.apache.commons.io.FileUtils
 
 class Game extends Serializable {
 
@@ -25,6 +23,9 @@ class Game extends Serializable {
     implicit val formats = DefaultFormats
 
     def gameLoop(): Unit = {
+
+      FileUtils.deleteDirectory(new File("FightGUI/fight1/roundJSON/"))
+      val newDir = new File("FightGUI/fight1/roundJSON/").mkdirs()
 
       while (true) {
 

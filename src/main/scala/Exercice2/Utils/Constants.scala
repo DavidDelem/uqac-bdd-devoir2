@@ -5,8 +5,7 @@ object Constants {
   val stickDistance: Double = 2.0
 
   //Starting positions
-  val villagePosition = new Position(0, 0)
   val goodGuyCircleRadius = 20
-  val badGuyCircleRadius = 120
+  val badGuyCircleRadius = 150
 
 }
