@@ -191,6 +191,10 @@ Voici le résultat final, la plupart du temps Pito est sauvé car le Solar est t
   <img src="_imgreadme/victoire.png" width="800px"/>
 </p>
 
+Nous avons également fait un affichage graphique mais dans un autre langage (jQuery et HTML). Lorsque la boucle est terminée, on toutes les étapes du graphe dans un fichier json. En ouvrant la page HTML (sur un serveur web), on voit bien le combat visuellement:
+
+GIF ANIME
+
 <h4>Combat 2. Les Orcs et le dragon vert attaquent le village de Pito</h4>
 
 `Fichiers:` &nbsp;  Code principal: <i>src/main/scala/Exercice2/Combat2</i> &nbsp;&nbsp; - &nbsp;&nbsp; Nos monstres: <i>src/main/Exercice2/Bestiary</i><br>
