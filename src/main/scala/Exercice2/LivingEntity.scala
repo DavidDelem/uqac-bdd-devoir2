@@ -2,7 +2,6 @@ package Exercice2
 
 import Exercice2.Utils.{Constants, Position}
 
-@SerialVersionUID(1000L)
 class LivingEntity (
                      var id:Int = 0,
                      var name: String = "",
@@ -15,12 +14,14 @@ class LivingEntity (
                      var speeds: List[(String, Int)] = null,
                      var melee: Attack = null,
                      var ranged: Attack = null,
-                     var target: LivingEntity = null)
+                     var target: LivingEntity = null,
+                     var hurtDuringRound:Boolean = false)
   extends Serializable {
 
   // Perte des HP
   // Remise à 0 en cas de valeur négative
   def takeDamage(amount: Int): Unit = {
+    hurtDuringRound = true
     this.hp -= amount
     if (this.hp < 0) this.hp = 0
   }
@@ -55,8 +56,15 @@ class LivingEntity (
       val distanceToTarget = desiredVelocity.getDistance()
 
       if(distanceToTarget < Constants.nearTargetRadius){
-        normalizedDesiredVelocity.x = normalizedDesiredVelocity.x * (distanceToTarget/Constants.nearTargetRadius)
-        normalizedDesiredVelocity.y = normalizedDesiredVelocity.y * (distanceToTarget/Constants.nearTargetRadius)
+
+        if(distanceToTarget > Constants.stickDistance){
+          normalizedDesiredVelocity.x *= (distanceToTarget/Constants.nearTargetRadius)
+          normalizedDesiredVelocity.y *= (distanceToTarget/Constants.nearTargetRadius)
+        }
+        else{
+          normalizedDesiredVelocity.x = 0
+          normalizedDesiredVelocity.y = 0
+        }
       }
       normalizedDesiredVelocity
     }
@@ -67,8 +75,8 @@ class LivingEntity (
   def move(){
     val normalizeDirection = computeNormalizedDirection()
     //TODO : use all different speeds
-    this.position.x += normalizeDirection.x * speeds(0)._2 //(speeds(0)._2/1000.0) * Constants.sleepMilli
-    this.position.y += normalizeDirection.y * speeds(0)._2 //(speeds(0)._2/1000.0) * Constants.sleepMilli
+    this.position.x += normalizeDirection.x * speeds(0)._2
+    this.position.y += normalizeDirection.y * speeds(0)._2
 
   }
 

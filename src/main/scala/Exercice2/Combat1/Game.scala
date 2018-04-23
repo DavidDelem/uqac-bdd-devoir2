@@ -3,7 +3,7 @@ package Exercice2.Combat1
 import java.io.{File, PrintWriter}
 
 import Exercice2.{Link, LivingEntity, LivingEntityPrototype}
-import Exercice2.Utils.{Constants, GraphConsole}
+import Exercice2.Utils.{Constants, GraphConsole, Position}
 import org.apache.spark.SparkContext
 import org.apache.spark.graphx.{EdgeContext, Graph, TripletFields, VertexId}
 import net.liftweb.json._
@@ -22,7 +22,6 @@ class Game extends Serializable {
     var myGraph = g
     var roundCounter = 0
     val fields = new TripletFields(true, true, true) //join strategy
-    var allRoundsVertices = scala.collection.mutable.ArrayBuffer.empty[Array[(VertexId, LivingEntity)]]
     implicit val formats = DefaultFormats
 
     def gameLoop(): Unit = {
@@ -32,54 +31,39 @@ class Game extends Serializable {
         roundCounter+=1
         println("================ Battle round : " + roundCounter + " ================")
 
-        //----------------------------------------
-        // SAVE RDD STATE FOR GUI (SERIALIZATION)
-        //----------------------------------------
-        //TODO: how to serialize without creating a new LivingEntity ?
-        allRoundsVertices += myGraph.vertices.map(vertex => (
-          vertex._1, new LivingEntity(
-          vertex._2.id,
-          vertex._2.name,
-          vertex._2.hpmax,
-          vertex._2.hp,
-          vertex._2.armor,
-          vertex._2.position,
-          vertex._2.team,
-          vertex._2.regeneration,
-          vertex._2.speeds,
-          vertex._2.melee,
-          vertex._2.ranged,
-          vertex._2.target)
-        )).collect()
-
         //--------------------
         // MOVING + REGENERATE UPDATE
         //--------------------
+        if(roundCounter > 1){
 
-        val newVerticesMove = myGraph.vertices.map(vertex => {
-          vertex._2.regenerate()
-          vertex._2.move()
-          vertex
-        })
-        myGraph = Graph(newVerticesMove, myGraph.edges)
+          val newVerticesMove = myGraph.vertices.map(vertex => {
+            if(vertex._2.hp > 0){
+              vertex._2.regenerate()
+              vertex._2.move()
+              vertex._2.hurtDuringRound = false
+            }
+            vertex
+          })
 
+          myGraph = Graph(newVerticesMove, myGraph.edges)
+        }
         //--------------------
         // TARGET UPDATE
         //--------------------
 
-        val targetMessages = myGraph.aggregateMessages[LivingEntity](
+        val targetMessages = myGraph.aggregateMessages[(LivingEntity, Position)](
           sendTargetMsg,
           mergeTargetMsg,
           fields
         )
-        targetMessages.collect()
+        //targetMessages.collect()
 
         myGraph = myGraph.joinVertices(targetMessages) {
 
-          (_, fighter, target) => {
+          (_, fighter, tupleTarget) => {
 
             val newFighter = LivingEntityPrototype.create(fighter)
-            newFighter.target = target
+            newFighter.target = tupleTarget._1
             newFighter
           }
         }
@@ -94,20 +78,49 @@ class Game extends Serializable {
           fields
         )
 
-        damageMessages.collect()
+        //damageMessages.collect()
 
         myGraph = myGraph.joinVertices(damageMessages) {
 
           (_, damageReceiver, damages) => {
 
-            val newDamageReceiver = LivingEntityPrototype.create(damageReceiver)
-            newDamageReceiver.takeDamage(damages)
-            newDamageReceiver
+            if(damages>0){
+              val newDamageReceiver = LivingEntityPrototype.create(damageReceiver)
+              newDamageReceiver.takeDamage(damages)
+              newDamageReceiver
+            }else
+              damageReceiver
+
           }
         }
 
-        // Affichage graphique
-        GraphConsole.printLivingEntityGraphVertices(myGraph)
+        //----------------------------------------
+        // SAVE RDD ROUND FOR GUI (SERIALIZATION)
+        //----------------------------------------
+        //TODO: how to serialize without creating a new LivingEntity ?
+        val roundVerticesRDD = myGraph.vertices.map(vertex => (
+          vertex._1, new LivingEntity(
+          vertex._2.id,
+          vertex._2.name,
+          vertex._2.hpmax,
+          vertex._2.hp,
+          vertex._2.armor,
+          vertex._2.position,
+          vertex._2.team,
+          vertex._2.regeneration,
+          vertex._2.speeds,
+          vertex._2.melee,
+          vertex._2.ranged,
+          vertex._2.target,
+          vertex._2.hurtDuringRound)
+        )).collect()
+
+        val writer = new PrintWriter(new File("FightGUI/fight1/roundJSON/round"+roundCounter+".json"))
+        writer.write(net.liftweb.json.Serialization.write(roundVerticesRDD))
+        writer.close()
+
+        // Print graph
+        //GraphConsole.printLivingEntityGraphVertices(myGraph)
 
         // Récupération du nombre d'alliés et ennemis toujours en vie
         val nbBadGuysAlive = myGraph.vertices.filter{ vertex => vertex._2.team == "BadGuys" && vertex._2.hp > 0}.count
@@ -124,19 +137,11 @@ class Game extends Serializable {
         }
         else if (roundCounter == maxIterations) return
 
-        //UI handled in another program, no need to temporize
-        //Thread.sleep(Constants.sleepMilli)
       }
 
     }
 
     gameLoop() //execute loop
-
-    //Export roundRDDs JSON
-    val writer = new PrintWriter(new File("livingEntities-Fight1.json"))
-    writer.write(net.liftweb.json.Serialization.write(allRoundsVertices))
-    writer.close()
-
     myGraph //return the result graph
   }
 
@@ -147,19 +152,30 @@ class Game extends Serializable {
 
   // Première fonction de l'aggregateMessages gérant la MAJ de la target
   // On regarde si ils sont enemis et si oui on complete le triplet
-  def sendTargetMsg(triplet: EdgeContext[LivingEntity, Link, LivingEntity]) {
+  def sendTargetMsg(triplet: EdgeContext[LivingEntity, Link, (LivingEntity, Position)]) {
 
     if(triplet.attr.relation == "enemy") {
-      triplet.sendToSrc(triplet.dstAttr)
-      triplet.sendToDst(triplet.srcAttr)
+      triplet.sendToSrc((triplet.dstAttr, triplet.srcAttr.position))
+      triplet.sendToDst((triplet.srcAttr, triplet.dstAttr.position))
     }
   }
   // Deuxième fonction de l'aggregateMessages gérant la MAJ de la target
   // Reçoit les éléments 2 à 2 et renvoie le monstre le plus interessant
-  def mergeTargetMsg(monster1: LivingEntity, monster2: LivingEntity): LivingEntity = {
+  def mergeTargetMsg(tupleMonster1: (LivingEntity, Position), tupleMonster2: (LivingEntity, Position)): (LivingEntity, Position) = {
 
-    if(monster1.hp <= monster2.hp && monster1.hp > 0) monster1
-    else monster2
+    val distanceToMonster1 = Position.distanceBetween(tupleMonster1._1.position, tupleMonster1._2)
+    val distanceToMonster2 = Position.distanceBetween(tupleMonster2._1.position, tupleMonster2._2)
+
+    //When the 2 monsters are dead
+    if(tupleMonster1._1.hp == 0 && tupleMonster2._1.hp == 0) tupleMonster1
+    //When monster2 is dead
+    if(tupleMonster1._1.hp > 0 && tupleMonster2._1.hp == 0) tupleMonster1
+    //When monster1 is dead
+    else if(tupleMonster2._1.hp > 0 && tupleMonster1._1.hp == 0) tupleMonster2
+    //When monster1 is closer than monster2
+    else if(distanceToMonster1 <= distanceToMonster2) tupleMonster1
+    //When monster2 is closer than monster1
+    else tupleMonster2
   }
 
   // Première fonction de l'aggregateMessages gérant les damages

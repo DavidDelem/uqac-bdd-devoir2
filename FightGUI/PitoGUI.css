@@ -1,0 +1,49 @@
+.LivingEntityContainer{
+    display: inline-block;
+    position: absolute;
+}
+
+.LivingEntityCircle {
+    margin: auto;
+    width: 30px;
+    height: 30px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 25px;
+    border: 1px solid black;
+}
+
+.GoodGuys{
+    background: #2ecc71;
+}
+
+.BadGuys{
+    background: #e74c3c;
+}
+
+.Hurt{
+    /*background: #e67e22 !important;*/
+    -webkit-animation: hurtBlink 0.5s infinite !important;  /* Safari 4+ */
+    -moz-animation: hurtBlink 0.5s infinite !important;  /* Fx 5+ */
+    -o-animation: hurtBlink 0.5s infinite !important;  /* Opera 12+ */
+    animation: hurtBlink 0.5s infinite !important;  /* IE 10+, Fx 29+ */
+}
+
+.Dead{
+    background: #95a5a6;
+}
+
+.text{
+    padding: 5px;
+    font-size: 12px;
+    text-align: center;
+}
+
+@-webkit-keyframes hurtBlink {
+  0%, 50% {
+    background-color: #e67e22;
+  }
+  51%, 100% {
+    background-color: #f1c40f;
+  }
+}

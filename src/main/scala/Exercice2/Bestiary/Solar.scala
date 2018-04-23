@@ -9,7 +9,7 @@ class Solar (position: Position, id: Int)
     "Solar",
     363,
     363,
-    44,
+      29,
     position,
     "GoodGuys",
     15,

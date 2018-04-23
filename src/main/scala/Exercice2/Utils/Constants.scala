@@ -1,8 +1,8 @@
 package Exercice2.Utils
 
 object Constants {
-  val sleepMilli = 1000
   val nearTargetRadius: Double = 30.0
+  val stickDistance: Double = 2.0
 
   //Starting positions
   val villagePosition = new Position(0, 0)
