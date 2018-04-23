@@ -63,8 +63,8 @@ object Combat1 extends App  {
       i,
       new OrcWorgRider(
         new Position(
-          Constants.villagePosition.x + Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
-          Constants.villagePosition.y +  Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
+          Constants.villagePosition.x + Constants.badGuyCircleRadius * Math.cos(badGuyRad),
+          Constants.villagePosition.y +  Constants.badGuyCircleRadius * Math.sin(badGuyRad)
         ),
         i.toInt
       )
@@ -80,8 +80,8 @@ object Combat1 extends App  {
       i,
       new BrutalWarlord(
         new Position(
-          Constants.villagePosition.x + Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
-          Constants.villagePosition.y + Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
+          Constants.villagePosition.x + Constants.badGuyCircleRadius * Math.cos(badGuyRad),
+          Constants.villagePosition.y + Constants.badGuyCircleRadius * Math.sin(badGuyRad)
         ),
         i.toInt
       )
@@ -97,8 +97,8 @@ object Combat1 extends App  {
       i,
       new DoubleAxeFury(
         new Position(
-          Constants.villagePosition.x + Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
-          Constants.villagePosition.y + Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
+          Constants.villagePosition.x + Constants.badGuyCircleRadius * Math.cos(badGuyRad),
+          Constants.villagePosition.y + Constants.badGuyCircleRadius * Math.sin(badGuyRad)
         ),
         i.toInt
       )
