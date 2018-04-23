@@ -38,8 +38,8 @@ class LivingEntity (
     var attack: Attack = null
     val distance = Position.distanceBetween(this.position,target.position)
 
-    if(distance <= melee.minDistance) attack = melee
-    else if(distance <= ranged.minDistance) attack = ranged
+    if(melee != null && distance <= melee.minDistance) attack = melee
+    else if(ranged != null && distance <= ranged.minDistance) attack = ranged
     else return 0
 
     val damage = attack.getDamage

@@ -129,12 +129,6 @@ object Combat1 extends App  {
   val relationships: RDD[Edge[Link]] = sc.parallelize(relationshipsBuffer)
 
 
-
-
-
-
-
-
 //  // Création du RDD pour les vertices
 //  val protagonist: RDD[(VertexId, (LivingEntity))] =
 //    sc.parallelize(Array(
