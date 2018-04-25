@@ -18,6 +18,7 @@ object Combat1 extends App  {
   val conf = new SparkConf().setAppName(appname).setMaster(master)
   val sc = new SparkContext(conf)
   sc.setLogLevel("ERROR")
+  sc.setCheckpointDir(System.getProperty("java.io.tmpdir"))
 
   // https://spark.apache.org/docs/2.1.1/graphx-programming-guide.html
   // https://gist.github.com/mitchi/c78a74685edf6a74813b808acf0906b5
@@ -175,6 +176,6 @@ object Combat1 extends App  {
 
   // Lancement de la bataille
   val game = new Game()
-  val resultsFight = game.execute(graph, sc, 100)
+  val resultsFight = game.execute(graph, sc, 1000)
 
 }

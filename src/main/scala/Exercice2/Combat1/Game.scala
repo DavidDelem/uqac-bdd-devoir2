@@ -3,7 +3,7 @@ package Exercice2.Combat1
 import java.io.{File, PrintWriter}
 
 import Exercice2.{Link, LivingEntity, LivingEntityPrototype}
-import Exercice2.Utils.Position
+import Exercice2.Utils.{GraphConsole, Position}
 import org.apache.spark.SparkContext
 import org.apache.spark.graphx.{EdgeContext, Graph, TripletFields}
 import net.liftweb.json._
@@ -31,6 +31,15 @@ class Game extends Serializable {
 
         roundCounter+=1
         println("================ Battle round : " + roundCounter + " ================")
+
+        //--------------------------------------
+        // CHECKPOINT + CLEAR ALL DEAD ENTITIES
+        //--------------------------------------
+
+        if(roundCounter%10==0){
+          myGraph = myGraph.subgraph(vpred = (id, attr) =>  attr.hp > 0)
+          myGraph.checkpoint()
+        }
 
         //--------------------
         // MOVING + REGENERATE UPDATE
@@ -122,7 +131,11 @@ class Game extends Serializable {
         writer.close()
 
         // Print graph
-        //GraphConsole.printLivingEntityGraphVertices(myGraph)
+        GraphConsole.printLivingEntityGraphVertices(myGraph)
+
+        //------------------------
+        // END LOOP CONDITIONS
+        //------------------------
 
         // Récupération du nombre d'alliés et ennemis toujours en vie
         val nbBadGuysAlive = myGraph.vertices.filter{ vertex => vertex._2.team == "BadGuys" && vertex._2.hp > 0}.count

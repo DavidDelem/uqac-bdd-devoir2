@@ -32,6 +32,15 @@ class Game extends Serializable {
         roundCounter+=1
         println("================ Battle round : " + roundCounter + " ================")
 
+        //--------------------------------------
+        // CHECKPOINT + CLEAR ALL DEAD ENTITIES
+        //--------------------------------------
+
+        if(roundCounter%10==0){
+          myGraph = myGraph.subgraph(vpred = (id, attr) =>  attr.hp > 0)
+          myGraph.checkpoint()
+        }
+
         //--------------------
         // MOVING + REGENERATE UPDATE
         //--------------------

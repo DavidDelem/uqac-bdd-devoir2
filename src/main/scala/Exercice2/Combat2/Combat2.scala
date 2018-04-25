@@ -4,6 +4,7 @@ import java.io.File
 import java.lang.Math._
 
 import Exercice2.Bestiary._
+import Exercice2.Combat1.Combat1.sc
 import Exercice2.Utils.Position
 import Exercice2.{Link, LivingEntity}
 import org.apache.spark.graphx.{Edge, Graph, VertexId}
@@ -21,6 +22,7 @@ object Combat2 extends App {
   val conf = new SparkConf().setAppName(appname).setMaster(master)
   val sc = new SparkContext(conf)
   sc.setLogLevel("ERROR")
+  sc.setCheckpointDir(System.getProperty("java.io.tmpdir"))
 
   var i:Long = 1
   val protagonistBuffer: ArrayBuffer[(VertexId, LivingEntity)] = ArrayBuffer()
