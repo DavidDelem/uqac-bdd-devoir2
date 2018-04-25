@@ -15,7 +15,8 @@ class OrcWorgRider (position: Position, id: Int)
     0,
     List(("ft", 3)),
     new Attack("mwk battleaxe", 4, 12, List(6), 5),
-    new Attack("shortbow", 1, 6, List(4), 110)
+    new Attack("shortbow", 1, 6, List(4), 110),
+    null
   )
 {
 

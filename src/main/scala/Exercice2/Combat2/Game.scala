@@ -20,7 +20,7 @@ class Game extends Serializable {
     var myGraph = g
     var roundCounter = 0
     val fields = new TripletFields(true, true, true) //join strategy
-    implicit val formats = DefaultFormats
+    implicit val formats: DefaultFormats.type = DefaultFormats
 
     def gameLoop(): Unit = {
 
@@ -112,6 +112,7 @@ class Game extends Serializable {
           vertex._2.speeds,
           vertex._2.melee,
           vertex._2.ranged,
+          vertex._2.special,
           vertex._2.target,
           vertex._2.hurtDuringRound)
         )).collect()
@@ -127,13 +128,15 @@ class Game extends Serializable {
         val nbBadGuysAlive = myGraph.vertices.filter{ vertex => vertex._2.team == "BadGuys" && vertex._2.hp > 0}.count
         val nbGoodGuysAlive = myGraph.vertices.filter{ vertex =>  vertex._2.team == "GoodGuys" && vertex._2.hp > 0}.count
 
+        println("nbBadGuysAlive : " + nbBadGuysAlive)
+        println("nbGoodGuysAlive : " + nbGoodGuysAlive)
         // Conditions d'arrêt: victoire des ennemis ou des alliés
         if(nbBadGuysAlive == 0){
-          println("END OF LOOP : Solar successfully saved Pito :D")
+          println("END OF LOOP : Solar and his friends saved Pito's village :D")
           return
         }
         else if(nbGoodGuysAlive == 0){
-          println("END OF LOOP : Unfortunatly, Solar and Pito died! Bad guys won :(")
+          println("END OF LOOP : Unfortunatly, all Angels and Pito died! Bad guys won :(")
           return
         }
         else if (roundCounter == maxIterations) return
@@ -168,7 +171,7 @@ class Game extends Serializable {
     val distanceToMonster2 = Position.distanceBetween(tupleMonster2._1.position, tupleMonster2._2)
 
     //When the 2 monsters are dead
-    if(tupleMonster1._1.hp == 0 && tupleMonster2._1.hp == 0) tupleMonster1
+    if(tupleMonster1._1.hp == 0 && tupleMonster2._1.hp == 0) return tupleMonster1
     //When monster2 is dead
     if(tupleMonster1._1.hp > 0 && tupleMonster2._1.hp == 0) tupleMonster1
     //When monster1 is dead

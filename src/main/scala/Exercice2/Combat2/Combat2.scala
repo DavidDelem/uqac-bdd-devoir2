@@ -1,5 +1,6 @@
 package Exercice2.Combat2
 
+import java.io.File
 import java.lang.Math._
 
 import Exercice2.Bestiary._
@@ -10,8 +11,8 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
 import scala.collection.mutable.ArrayBuffer
-
 import Exercice2.Utils.Constants
+
 
 object Combat2 extends App {
 

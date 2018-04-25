@@ -14,6 +14,8 @@ class Planetar (position: Position, id: Int)
     "GoodGuys",
     10,
     List(("ft", 5), ("fly", 16)),
-    new Attack("+3 holy greatsword", 18, 21, List(27, 22, 17), 5)
+    new Attack("+3 holy greatsword", 18, 21, List(27, 22, 17), 5),
+    null,
+    null
   ){
 }

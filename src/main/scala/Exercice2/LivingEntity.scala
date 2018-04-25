@@ -14,6 +14,7 @@ class LivingEntity (
                      var speeds: List[(String, Int)] = null,
                      var melee: Attack = null,
                      var ranged: Attack = null,
+                     var special: Attack = null,
                      var target: LivingEntity = null,
                      var hurtDuringRound:Boolean = false)
   extends Serializable {
@@ -38,13 +39,14 @@ class LivingEntity (
     var attack: Attack = null
     val distance = Position.distanceBetween(this.position,target.position)
 
+
     if(melee != null && distance <= melee.minDistance) attack = melee
+    else if(special != null && distance <= special.minDistance) attack = special
     else if(ranged != null && distance <= ranged.minDistance) attack = ranged
     else return 0
 
-    val damage = attack.getDamage
-    if(damage >= target.armor) damage
-    else 0
+    attack.getDamage(target.armor)
+
   }
 
   def computeNormalizedDirection(): Position = {

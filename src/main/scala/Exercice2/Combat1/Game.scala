@@ -20,7 +20,7 @@ class Game extends Serializable {
     var myGraph = g
     var roundCounter = 0
     val fields = new TripletFields(true, true, true) //join strategy
-    implicit val formats = DefaultFormats
+    implicit val formats: DefaultFormats.type = DefaultFormats
 
     def gameLoop(): Unit = {
 
@@ -112,6 +112,7 @@ class Game extends Serializable {
           vertex._2.speeds,
           vertex._2.melee,
           vertex._2.ranged,
+          vertex._2.special,
           vertex._2.target,
           vertex._2.hurtDuringRound)
         )).collect()
@@ -168,7 +169,7 @@ class Game extends Serializable {
     val distanceToMonster2 = Position.distanceBetween(tupleMonster2._1.position, tupleMonster2._2)
 
     //When the 2 monsters are dead
-    if(tupleMonster1._1.hp == 0 && tupleMonster2._1.hp == 0) tupleMonster1
+    if(tupleMonster1._1.hp == 0 && tupleMonster2._1.hp == 0) return tupleMonster1
     //When monster2 is dead
     if(tupleMonster1._1.hp > 0 && tupleMonster2._1.hp == 0) tupleMonster1
     //When monster1 is dead

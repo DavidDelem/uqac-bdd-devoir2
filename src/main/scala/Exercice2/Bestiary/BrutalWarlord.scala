@@ -15,7 +15,8 @@ class BrutalWarlord (position: Position, id: Int)
     0,
     List(("ft", 5)),
     new Attack("+1 vicious flail", 11, 18, List(20, 15, 10), 5),
-    new Attack("mwk throwing axe", 6, 11, List(19), 110)
+    new Attack("mwk throwing axe", 6, 11, List(19), 110),
+    null
   ){
 
 

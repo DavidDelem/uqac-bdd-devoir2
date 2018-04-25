@@ -14,6 +14,9 @@ class GreenGreatWyrmDragon (position: Position, id: Int)
     "BadGuys",
     0,
     List(("ft", 7), ("fly", 45), ("swim", 7)),
-    new Attack("bite", 25, 29, List(33), 5)
+    new Attack("tail slap", 25, 27, List(31), 5),
+    null,
+    new Attack("tail slap", 26, 27, List(999), 70)
+
   ){
 }

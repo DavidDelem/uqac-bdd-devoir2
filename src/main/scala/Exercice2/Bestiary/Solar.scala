@@ -15,7 +15,8 @@ class Solar (position: Position, id: Int)
     15,
     List(("ft", 9), ("fly", 27)),
     new Attack("+5 dancing greatsword", 21, 24, List(35, 30, 25, 20), 5),
-    new Attack("+5 composite longbow", 16, 20, List(31, 26, 21, 16), 110)
+    new Attack("+n5 composite longbow", 16, 20, List(31, 26, 21, 16), 110),
+    null
   ){
 
   override def move(){}

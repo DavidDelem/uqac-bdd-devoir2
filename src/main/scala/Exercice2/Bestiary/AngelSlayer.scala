@@ -14,7 +14,8 @@ class AngelSlayer (position: Position, id: Int)
     "BadGuys",
     0,
     List(("ft", 7)),
-    new Attack("double axe", 8, 15, List(26,16,11), 5),
-    new Attack("mwk composite longbow", 7, 14, List(19,14,9), 110)
+    new Attack("double axe", 8, 15, List(21,16,11), 5),
+    new Attack("mwk composite longbow", 7, 14, List(19,14,9), 110),
+    null
   ){
 }

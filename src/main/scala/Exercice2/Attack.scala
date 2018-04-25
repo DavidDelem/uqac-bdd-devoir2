@@ -2,19 +2,27 @@ package Exercice2
 
 class Attack(
               var name: String,
-              var minAccuracy: Int,
-              var maxAccuracy: Int,
-              var damages: List[Int],
+              var minDamages: Int,
+              var maxDamages: Int,
+              var accuracies: List[Int],
               var minDistance: Int
             ) extends Serializable {
 
-  private var currentIndexDamage: Int = 0
+  private var attackNumber: Int = 0
 
-  def getDamage : Int = {
+  def getDamage(targetArmor: Int) : Int = {
     val random = scala.util.Random
-    val damage = damages(currentIndexDamage) + ( minAccuracy + random.nextInt(maxAccuracy - minAccuracy))
 
-    if(currentIndexDamage < damages.size - 1) currentIndexDamage += 1
+    val doIHit = random.nextInt(20-1) + accuracies(attackNumber)
+
+    var damage = random.nextInt(maxDamages - minDamages) + minDamages
+
+    //On peut mieux opti en scala mais au moins comme ça le calcul est clair
+    if(doIHit < targetArmor) {
+      damage = 0
+    }
+
+    if(attackNumber < accuracies.size - 1) attackNumber += 1
 
     damage
   }
