@@ -222,7 +222,7 @@ Voici le résultat final, la plupart du temps Pito est sauvé car le Solar est t
 
 Nous avons également fait un affichage graphique mais dans un autre langage (jQuery, PHP et HTML). Les données sont transférées à l'interface via Websocket en temps réel pour un affichage du combat en live. <a href="https://docs.google.com/document/d/1FYRVSCEYBRJ9QSq5nRjY9qPYKdYzW8SwYfZ03rMwpbw/edit?usp=sharing">Cliquer ici</a> pour voir les instructions de configuration et de lancement de l'interface. Voici le résultat:
 
-GIF ANIME
+<mark>GIF ANIME</mark>
 
 <h4>Combat 2. Les Orcs et le dragon vert attaquent le village de Pito</h4>
 
@@ -230,12 +230,44 @@ GIF ANIME
 
 `Ce qu'on a fait`<br>
 
-Ce combat reprends les bases du premier, mais maintenant c'est plus compliqué ! Il y a beaucoup de monstres alors on créé certains RDD à partir d'un array créé avec une boucle for. Il y a aussi de nouvelles attaques pour les monstres et un dragon. On ne va pas tout réexpliquer en détail car c'est exactement le même principe que le combat 1. On peut ausi visualiser le combat 2 via l'interface (qui s'adapte automatiquement quelque soit le combat), il suffit de lancer le combat 2 au lieu du combat 1. Voici le résultat:
+Ce combat reprend les bases du premier combat, mais maintenant c'est plus compliqué ! Il y a plus de monstres. Il y a aussi de nouvelles attaques pour les monstres et un dragon en guise de super ennemi. On ne va pas tout réexpliquer en détail car c'est exactement le même principe que le combat 1. On peut ausi visualiser le combat 2 via l'interface (qui s'adapte automatiquement quelque soit le combat), il suffit de lancer le combat 2 au lieu du combat 1 via le programme Scala. Voici le résultat:
+
+<mark>GIF ANIME</mark>
 
 
 ---
 
 <h4>Question ouverte, Comment gérer efficacement un système de distance 3D avec un graphe d’agents distribué? On met la distance sur le sommet? sur l’arête? problèmes de collision etc.</h4>
----
 
-Travailler avec des vecteurs.
+Nous travaillons avec des vecteurs de distances. Chaque monstre possède son vecteur de position (donc chaque arrête). Ensuite, nous réalisons des calculs de distance en utilisant les propriétés d'un vecteur. Voici le code de la classe Position :
+
+```scala
+class Position (var x: Double = 0, var y: Double = 0) extends Serializable {
+
+  def getDistance() : Double = {
+    Math.sqrt(Math.pow(this.x, 2)+ Math.pow(this.y, 2))
+  }
+
+  def normalize() : Position = {
+    val distance = getDistance()
+    var pos = new Position(0,0)
+
+    if(distance != 0){
+      pos.x = this.x/distance
+      pos.y = this.y/distance
+    }
+    pos
+  }
+}
+
+object Position{
+
+  def distanceBetween(p1: Position, p2: Position): Double = {
+    Math.sqrt(Math.pow(p2.x-p1.x,2)+Math.pow(p2.y-p1.y,2))
+  }
+}
+```
+
+La normalisation d'un vecteur est utilisée dans la méthode <i>move()</i> de la classe <i>LivingEntity.scala</i> pour orienter le déplacement du monstre vers sa cible.
+
+<b>Remarque :</b> Notre système de combat est en 2D, mais il serait facile de passer en 3D. Il faudrait simplement rajouter un attribut "z" à notre classe <i>Position.scala</i> et l'intégrer dans les calculs de distance et normalisation de cette même classe. Le plus difficile serait de trouver et d'utiliser de manière efficace une technologie d'affichage 3D pour le rendu.
