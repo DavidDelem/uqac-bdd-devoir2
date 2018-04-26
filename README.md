@@ -38,7 +38,7 @@ Crawler: <i>crawlers/crawler.py</i> &nbsp;&nbsp; - &nbsp;&nbsp; Json obtenu: <i>
 Code scala: <i>src/main/scala/Exercice1</i><br>
 
 `Ce qu'on a fait`<br>
-Nous avons mis les données crawlées dans un RDD Spark pour que toutes les opérations puissent être parallélisées entre nos 4 machines. Pour cela, on défini un Master et des Slaves, quelqu'un lance le master puis les Slaves font la commande suivante pour le rejoindre: <i>./spark-class org.apache.spark.deploy.worker.Worker spark://IP_MASTER:PORT</i>. Depuis l'interface on peut voir que les slaves ont bien réussi à rejoindre le master et la running application pour lesquelles les opérations sont parallélisées:
+Nous avons mis les données crawlées dans un RDD Spark pour que toutes les opérations puissent être parallélisées entre nos 4 machines. Pour cela, on défini un Master et des Workers, quelqu'un lance le master puis les Workers font la commande suivante pour le rejoindre: <i>./spark-class org.apache.spark.deploy.worker.Worker spark://IP_MASTER:PORT</i>. Depuis l'interface on peut voir que les workers ont bien réussi à rejoindre le master et la running application pour lesquelles les opérations sont parallélisées:
 <p align="center">
   <img src="_imgreadme/cluster.PNG" width="700px"/><br>
   <i>L'interface de spark ou l'on voit la conso de nos workers lors de la parallélisation des tâches</i>
@@ -46,7 +46,7 @@ Nous avons mis les données crawlées dans un RDD Spark pour que toutes les opé
 
 <p align="center">
   <img src="_imgreadme/connexionworker.png" width="700px"/> <br>
-  <i>La connexion d'un Slave au Master</i>
+  <i>La connexion d'un Worker au Master</i>
 </p>
 
 ---
@@ -84,53 +84,65 @@ Nous l’avons également fait pour tous les sorts (bonus) en faisant un groupBy
 
 `Ce qu'on a fait`<br>
 
-C'est un combat entre le Solar et les monstres pour protéger Pito, en utilisant GraphX de Spark. Le code spécifique au combat 1 se trouve dans  <i>src/main/scala/Exercice2/Combat1</i> et le code partagé des deux combats (comme le bestiaire et les utilitaires) se trouve un niveau plus haut dans <i>src/main/scala/Exercice2</i>.
+C'est un combat entre le Solar et les monstres pour protéger Pito, en utilisant GraphX de Spark. On commence par créer nos RDD de vertex et de edge dans <i>Combat1.scala</i>, puis on appelle la boucle principale qui se trouve dans <i>Game.scala</i>. On réalise un certain nombre d'itérations de cette boucle et lors de chaque itération, différentes étapes font évoluer le graphe:
 
-On commence par créer nos RDD de vertex et de edge dans <i>Combat1.scala</i>, puis on appelle la boucle principale qui se trouve dans <i>Game.scala</i>. On réalise un certain nombre d'itérations de cette boucle et lors de chaque itération, différentes étapes font évoluer le graphe:
+<b>1. Tous les 10 rounds, on enlève les monstres morts du RDD et on réalise un checkpoint() sur le RDD pour reset son lineage Graph.</b>
 
-<b>1. Pour chaque monstre, on commence par vérifier si on a besoin de faire certaines choses</b>
-- Regénération (en vérité seul le Solar va se regénérer puisque la regénération des autres est à zéro).
-- Déplacement (en fonction de la vitesse de chaque monstre).
+```scala
+if(roundCounter%10==0){
+    myGraph = myGraph.subgraph(vpred = (_, attr) =>  attr.hp > 0)
+    myGraph.checkpoint()
+}
+```
+
+<b>2. Pour chaque monstre, on commence par réaliser les actions qui ne dépendent que de lui de manière isolée :</b>
+- Régénération
+- Déplacement (en fonction de la vitesse de chaque monstre)
+- Etat touché pendant le round remis à false (utile pour l'affichage)
+
 
 ```scala
 val newVerticesMove = myGraph.vertices.map(vertex => {
-    vertex._2.regenerate()
-    vertex._2.move()
+    if(vertex._2.hp > 0){
+        vertex._2.regenerate()
+        vertex._2.move()
+        vertex._2.hurtDuringRound = false
+    }
     vertex
 })
+
 myGraph = Graph(newVerticesMove, myGraph.edges)
 ```
 
-<i>A noter que toutes les fonctions qui regénérent, font les mouvements, calculent les dommages reçus ect... (comme regenerate() et move() ici) se trouvent dans LivingEntity (classe parente de tout les monstres).</i>
+<i>A noter que toutes les fonctions qui regénèrent, font les mouvements, calculent les dommages reçus ect... se trouvent dans LivingEntity (classe parente de tout les monstres).</i>
 
-<b>2. Pour chaque monstre, on choisi et on met à jours la cible à attaquer, de la façon suivante:</b>
+<b>3. Pour chaque monstre, on choisi et on met à jours la cible à attaquer, de la façon suivante:</b>
 - Dans le AgregateMessages, on détermine pour chaque monstre l'énnemi le plus interessant à attaquer.
 - Dans le JoinVertixes, on met à jours le monstre avec la bonne target (pour cela, on créé une nouvelle instance du bon type de monstre avec la nouvelle target, qu'on return pour remplacer la précédente pour que ce soit pris en compte, d'ou l'utilisation du design pattern Prototype).
 
 ```scala
-val targetMessages = myGraph.aggregateMessages[LivingEntity](
+val targetMessages = myGraph.aggregateMessages[(LivingEntity, Position)](
     sendTargetMsg,
     mergeTargetMsg,
     fields
 )
 
-targetMessages.collect()
-
 myGraph = myGraph.joinVertices(targetMessages) {
-    (_, fighter, target) => {
+
+    (_, fighter, tupleTarget) => {
+
         val newFighter = LivingEntityPrototype.create(fighter)
-        newFighter.target = target
+        newFighter.target = tupleTarget._1
         newFighter
     }
 }
 ```
 
-<i>Détail des fonction sendTargetMsg() et mergeTargetMsg() en bas de la boucle principale.</i>
+<i>Détail des fonctions sendTargetMsg() et mergeTargetMsg() en bas du fichier Game.scala</i>
 
-<b>3. On réalise les attaques en faisant perdre le nombre correct de HP:</b>
-
-- Dans le AgregateMessages, on fait le calcul des domages pour chaque monstre (principe du map reduce)
-- Dans le joinVertixes, on fait perdre les HP à chaque monstre (pour cela, on créé une nouvelle instance du bon type de monstre avec les nouveaux HP, qu'on return pour remplacer la précédente).
+<b>4. Chaque monstre subit la somme des dégâts des autres monstres qui l'attaquent:</b>
+- Dans le AgregateMessages, on fait le calcul des dommages que va recevoir chaque monstre
+- Dans le joinVertixes, on fait perdre les HP à chaque monstre (pour cela, on créé une nouvelle instance du bon type de monstre avec les nouveaux HP).
 
 ```scala
 val damageMessages = myGraph.aggregateMessages[Int](
@@ -139,23 +151,37 @@ val damageMessages = myGraph.aggregateMessages[Int](
     fields
 )
 
-damageMessages.collect()
-
 myGraph = myGraph.joinVertices(damageMessages) {
+
     (_, damageReceiver, damages) => {
-        val newDamageReceiver = LivingEntityPrototype.create(damageReceiver)
-        newDamageReceiver.takeDamage(damages)
-        newDamageReceiver
+
+        if(damages>0){
+            val newDamageReceiver = LivingEntityPrototype.create(damageReceiver)
+            newDamageReceiver.takeDamage(damages)
+            newDamageReceiver
+        }else
+            damageReceiver
+
     }
 }
 ```
-<i>Détail des fonction sendDamageMsg() et mergeDamageMsg() en bas de la boucle principale.</i>
+<i>Détail des fonction sendDamageMsg() et mergeDamageMsg() en bas du ficher Game.scala</i>
 
-<b>4. Le nouvel état du graphe est affichée dans la console.</b>
+<b>5. Les vertices sont streamées en Websocket sur <i>ws://localhost:8089/fight</i> :</b>
+
+```scala
+val webSocketClient = WebSocket().open("ws://localhost:8089/fight")
+
+webSocketClient.send(net.liftweb.json.Serialization.write(roundVerticesRDD))
+```
+
+<b>5.2 (Optionnel) Il est possible d'afficher les vertices à chaque round dans la console du programme Scala en décommentant la ligne suivante :</b>
 
 ```scala
 GraphConsole.printLivingEntityGraphVertices(myGraph)
 ```
+
+L'affichage en console est du type :
 
 - Le nom du monstre (ID, HP, POSITION) --DISTANCE-A-SA-CIBLE--> le monstre qu'il attaque(ID, HP, POSITION)
 
@@ -167,33 +193,36 @@ GraphConsole.printLivingEntityGraphVertices(myGraph)
 <b>5
     . On vérifie les conditions d'arrêt</b>
 - On compte le nombre d'alliés et d'ennemis encore vivant en faisant un filter suivi d'un count.
-- Si il reste 0 ennemis: Pito est sauvé :D
-- Si il reste 0 alliés: Solar est mort, Pito à perdu :(
-- Sinon, on continue la boucle pour faire une nouvelle itération.
+- Si il reste 0 ennemi: Pito est sauvé :D
+- Si il reste 0 allié: Solar est mort, Pito à perdu :(
+- Sinon, on continue la boucle pour faire une nouvelle itération jusqu'au nombre MAX d'itérations.
 
 ```scala
-val nbBadGuysAlive = myGraph.vertices.filter{vertex =>vertex._2.team =="BadGuys" && vertex._2.hp >0}.count
-val nbGoodGuysAlive = myGraph.vertices.filter{vertex =>vertex._2.team =="GoodGuys" && vertex._2.hp >0}.count
+val nbBadGuysAlive = myGraph.vertices.filter{ vertex => vertex._2.team == "BadGuys" && vertex._2.hp > 0}.count
+val nbGoodGuysAlive = myGraph.vertices.filter{ vertex =>  vertex._2.team == "GoodGuys" && vertex._2.hp > 0}.count
 
 if(nbBadGuysAlive == 0){
-    println("END OF LOOP : Solar successfully saved Pito :D")
-    return
+  println("END OF LOOP : Solar successfully saved Pito :D")
+  return
 }
 else if(nbGoodGuysAlive == 0){
-    println("END OF LOOP : Unfortunatly, Solar and Pito died! Bad guys won :(")
-    return
+  println("END OF LOOP : Unfortunatly, Solar and Pito died! Bad guys won :(")
+  return
 }
+else if (roundCounter == maxIterations) return
 ```
 
-Voici le résultat final, la plupart du temps Pito est sauvé car le Solar est trés puissant grâce à son bouclier et sa regénération ! Il faut quand même une quarantaine de rounds pour tuer tout les énemis (les Double Axe Fury sont trés résistants).
+Voici le résultat final, la plupart du temps Pito est sauvé car le Solar est trés puissant grâce à son bouclier et sa régénération ! Il faut quand même une quarantaine de rounds pour tuer tout les ennemis (les Double Axe Fury sont très résistants).
 
 <p align="center">
   <img src="_imgreadme/victoire.png" width="800px"/>
 </p>
 
+<b>FightGUI : interface graphique de combat</b>
+
 Nous avons également fait un affichage graphique mais dans un autre langage (jQuery, PHP et HTML). Les données sont transférées à l'interface via Websocket en temps réel pour un affichage du combat en live. <a href="https://docs.google.com/document/d/1FYRVSCEYBRJ9QSq5nRjY9qPYKdYzW8SwYfZ03rMwpbw/edit?usp=sharing">Cliquer ici</a> pour voir les instructions de configuration et de lancement de l'interface. Voici le résultat:
 
-GIF ANIME
+<mark>GIF ANIME</mark>
 
 <h4>Combat 2. Les Orcs et le dragon vert attaquent le village de Pito</h4>
 
@@ -201,12 +230,44 @@ GIF ANIME
 
 `Ce qu'on a fait`<br>
 
-Ce combat reprends les bases du premier, mais maintenant c'est plus compliqué ! Il y a beaucoup de monstres alors on créé certains RDD à partir d'un array créé avec une boucle for. Il y a aussi de nouvelles attaques pour les monstres et un dragon. On ne va pas tout réexpliquer en détail car c'est exactement le même principe que le combat 1. On peut ausi visualiser le combat 2 via l'interface (qui s'adapte automatiquement quelque soit le combat), il suffit de lancer le combat 2 au lieu du combat 1. Voici le résultat:
+Ce combat reprend les bases du premier combat, mais maintenant c'est plus compliqué ! Il y a plus de monstres. Il y a aussi de nouvelles attaques pour les monstres et un dragon en guise de super ennemi. On ne va pas tout réexpliquer en détail car c'est exactement le même principe que le combat 1. On peut ausi visualiser le combat 2 via l'interface (qui s'adapte automatiquement quelque soit le combat), il suffit de lancer le combat 2 au lieu du combat 1 via le programme Scala. Voici le résultat:
+
+<mark>GIF ANIME</mark>
 
 
 ---
 
 <h4>Question ouverte, Comment gérer efficacement un système de distance 3D avec un graphe d’agents distribué? On met la distance sur le sommet? sur l’arête? problèmes de collision etc.</h4>
----
 
-Travailler avec des vecteurs.
+Nous travaillons avec des vecteurs de distances. Chaque monstre possède son vecteur de position (donc chaque arrête). Ensuite, nous réalisons des calculs de distance en utilisant les propriétés d'un vecteur. Voici le code de la classe Position :
+
+```scala
+class Position (var x: Double = 0, var y: Double = 0) extends Serializable {
+
+  def getDistance() : Double = {
+    Math.sqrt(Math.pow(this.x, 2)+ Math.pow(this.y, 2))
+  }
+
+  def normalize() : Position = {
+    val distance = getDistance()
+    var pos = new Position(0,0)
+
+    if(distance != 0){
+      pos.x = this.x/distance
+      pos.y = this.y/distance
+    }
+    pos
+  }
+}
+
+object Position{
+
+  def distanceBetween(p1: Position, p2: Position): Double = {
+    Math.sqrt(Math.pow(p2.x-p1.x,2)+Math.pow(p2.y-p1.y,2))
+  }
+}
+```
+
+La normalisation d'un vecteur est utilisée dans la méthode <i>move()</i> de la classe <i>LivingEntity.scala</i> pour orienter le déplacement du monstre vers sa cible.
+
+<b>Remarque :</b> Notre système de combat est en 2D, mais il serait facile de passer en 3D. Il faudrait simplement rajouter un attribut "z" à notre classe <i>Position.scala</i> et l'intégrer dans les calculs de distance et normalisation de cette même classe. Le plus difficile serait de trouver et d'utiliser de manière efficace une technologie d'affichage 3D pour le rendu.
