@@ -127,8 +127,9 @@ object Combat2 extends App {
   }
 
   //200x Orc Barbarians
-  for (i <- 12 to 211) {
-    protagonistBuffer += ((
+  //for (i <- 12 to 211) {
+  for (i <- 12 to 20) {
+  protagonistBuffer += ((
       i,
       new GreataxeOrc(
         new Position(

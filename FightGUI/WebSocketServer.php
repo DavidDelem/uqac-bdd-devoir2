@@ -35,7 +35,7 @@ class WSFight implements MessageComponentInterface {
 }
 
 // Run the server application through the WebSocket protocol on port 8089
-$app = new Ratchet\App('localhost', 8089);
+$app = new Ratchet\App('127.0.0.1', 8089);
 $app->route('/fight', new WSFight);
 $app->run();
 

@@ -18,4 +18,6 @@ class GreataxeOrc  (position: Position, id: Int)
     new Attack("throwing haxe", 8, 13, List(5), 110),
     null
   ){
+
+
 }

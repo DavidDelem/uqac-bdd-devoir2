@@ -22,7 +22,7 @@ object LivingEntityPrototype {
     }
 
     newLivingEntity.position = livingEntity.position
-    newLivingEntity.target = livingEntity.target
+    newLivingEntity.targets = livingEntity.targets
     newLivingEntity.hp = livingEntity.hp
 
     newLivingEntity

@@ -1,7 +1,8 @@
 package Exercice2.Combat1
 
+
 import Exercice2.{Link, LivingEntity, LivingEntityPrototype}
-import Exercice2.Utils.{GraphConsole, Position}
+import Exercice2.Utils.Position
 import org.apache.spark.SparkContext
 import org.apache.spark.graphx.{EdgeContext, Graph, TripletFields}
 import net.liftweb.json._
@@ -22,7 +23,7 @@ class Game extends Serializable {
 
     //WebSocket Client to send real-time data to the GUI
     val webSocketClient = WebSocket()
-      .open("ws://localhost:8089/fight")
+      .open("ws://127.0.0.1:8089/fight")
       .listener(new TextListener {
         override def onOpen(){ println("WSClient connected") }
         override def onClose(){ println("WSClient disconnected") }
@@ -35,7 +36,9 @@ class Game extends Serializable {
     def gameLoop(): Unit = {
 
       while (true) {
-
+        if(roundCounter%10 == 0) {
+          myGraph.checkpoint();
+        }
         roundCounter+=1
         println("================ Battle round : " + roundCounter + " ================")
 
@@ -43,10 +46,10 @@ class Game extends Serializable {
         // CHECKPOINT + CLEAR ALL DEAD ENTITIES
         //--------------------------------------
 
-        if(roundCounter%10==0){
-          myGraph = myGraph.subgraph(vpred = (_, attr) =>  attr.hp > 0)
-          myGraph.checkpoint()
-        }
+        if(roundCounter%10==0) myGraph.checkpoint()
+
+        myGraph = myGraph.subgraph(vpred = (_, attr) =>  attr.hp > 0)
+
 
         //--------------------
         // MOVING + REGENERATE UPDATE
@@ -68,7 +71,7 @@ class Game extends Serializable {
         // TARGET UPDATE
         //--------------------
 
-        val targetMessages = myGraph.aggregateMessages[(LivingEntity, Position)](
+        val targetMessages = myGraph.aggregateMessages[List[LivingEntity]](
           sendTargetMsg,
           mergeTargetMsg,
           fields
@@ -76,10 +79,10 @@ class Game extends Serializable {
 
         myGraph = myGraph.joinVertices(targetMessages) {
 
-          (_, fighter, tupleTarget) => {
+          (_, fighter, allTargets) => {
 
             val newFighter = LivingEntityPrototype.create(fighter)
-            newFighter.target = tupleTarget._1
+            newFighter.setTargets(allTargets)
             newFighter
           }
         }
@@ -126,7 +129,8 @@ class Game extends Serializable {
           vertex._2.melee,
           vertex._2.ranged,
           vertex._2.special,
-          vertex._2.target,
+          vertex._2.maxTargets,
+          vertex._2.targets,
           vertex._2.hurtDuringRound)
         )).collect()
 
@@ -145,11 +149,11 @@ class Game extends Serializable {
 
         // Conditions d'arrêt: victoire des ennemis ou des alliés
         if(nbBadGuysAlive == 0){
-          println("END OF LOOP : Solar successfully saved Pito :D")
+          println("END OF LOOP : Solar and his friends saved Pito's village :D")
           return
         }
         else if(nbGoodGuysAlive == 0){
-          println("END OF LOOP : Unfortunatly, Solar and Pito died! Bad guys won :(")
+          println("END OF LOOP : Unfortunatly, all Angels and Pito died! Bad guys won :(")
           return
         }
         else if (roundCounter == maxIterations) return
@@ -174,41 +178,37 @@ class Game extends Serializable {
 
   // Première fonction de l'aggregateMessages gérant la MAJ de la target
   // On regarde si ils sont enemis et si oui on complete le triplet
-  def sendTargetMsg(triplet: EdgeContext[LivingEntity, Link, (LivingEntity, Position)]) {
+  def sendTargetMsg(triplet: EdgeContext[LivingEntity, Link, List[LivingEntity]]) {
 
     if(triplet.attr.relation == "enemy") {
-      triplet.sendToSrc((triplet.dstAttr, triplet.srcAttr.position))
-      triplet.sendToDst((triplet.srcAttr, triplet.dstAttr.position))
+      triplet.sendToSrc(List(triplet.dstAttr))
+      triplet.sendToDst(List(triplet.srcAttr))
     }
   }
   // Deuxième fonction de l'aggregateMessages gérant la MAJ de la target
   // Reçoit les éléments 2 à 2 et renvoie le monstre le plus interessant
-  def mergeTargetMsg(tupleMonster1: (LivingEntity, Position), tupleMonster2: (LivingEntity, Position)): (LivingEntity, Position) = {
-
-    val distanceToMonster1 = Position.distanceBetween(tupleMonster1._1.position, tupleMonster1._2)
-    val distanceToMonster2 = Position.distanceBetween(tupleMonster2._1.position, tupleMonster2._2)
-
-    //When the 2 monsters are dead
-    if(tupleMonster1._1.hp == 0 && tupleMonster2._1.hp == 0) return tupleMonster1
-    //When monster2 is dead
-    if(tupleMonster1._1.hp > 0 && tupleMonster2._1.hp == 0) tupleMonster1
-    //When monster1 is dead
-    else if(tupleMonster2._1.hp > 0 && tupleMonster1._1.hp == 0) tupleMonster2
-    //When monster1 is closer than monster2
-    else if(distanceToMonster1 <= distanceToMonster2) tupleMonster1
-    //When monster2 is closer than monster1
-    else tupleMonster2
+  def mergeTargetMsg(monsterAccum: List[LivingEntity], newMonster: List[LivingEntity]): List[LivingEntity] = {
+    monsterAccum:::newMonster
   }
 
   // Première fonction de l'aggregateMessages gérant les damages
   def sendDamageMsg(triplet: EdgeContext[LivingEntity, Link, Int]) {
 
-    if(triplet.srcAttr.target.id == triplet.dstAttr.id) {
-      triplet.sendToDst(triplet.srcAttr.attackTarget())
+    //Vérifie que cette connexion est dans ma liste de targets (Pour ne pas attaquer tous les monstres)
+    if(triplet.srcAttr.targets.map(target => target.id).contains(triplet.dstAttr.id)) {
+      triplet.sendToDst(triplet.srcAttr.attackTarget(triplet.dstAttr))
     }
-    if(triplet.dstAttr.target.id == triplet.srcAttr.id) {
-      triplet.sendToSrc(triplet.dstAttr.attackTarget())
+
+    if(triplet.dstAttr.targets.map(target => target.id).contains(triplet.srcAttr.id)) {
+      triplet.sendToSrc(triplet.dstAttr.attackTarget(triplet.srcAttr))
     }
+
+    //    if(triplet.srcAttr.target.id == triplet.dstAttr.id) {
+    //      triplet.sendToDst(triplet.srcAttr.attackTarget())
+    //    }
+    //    if(triplet.dstAttr.target.id == triplet.srcAttr.id) {
+    //      triplet.sendToSrc(triplet.dstAttr.attackTarget())
+    //    }
   }
 
   // Deuxième fonction de l'aggregateMessages gérant les damages */

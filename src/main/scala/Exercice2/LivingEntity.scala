@@ -15,7 +15,8 @@ class LivingEntity (
                      var melee: Attack = null,
                      var ranged: Attack = null,
                      var special: Attack = null,
-                     var target: LivingEntity = null,
+                     var maxTargets: Int = 1,
+                     var targets: List[LivingEntity] = List.empty[LivingEntity],
                      var hurtDuringRound:Boolean = false)
   extends Serializable {
 
@@ -34,7 +35,7 @@ class LivingEntity (
     if (this.hp > this.hpmax) this.hp = this.hpmax
   }
 
-  def attackTarget() : Int = {
+  def attackTarget(target: LivingEntity) : Int = {
 
     var attack: Attack = null
     val distance = Position.distanceBetween(this.position,target.position)
@@ -51,9 +52,10 @@ class LivingEntity (
 
   def computeNormalizedDirection(): Position = {
 
-    if(target != null && target.hp > 0){
+    //On se déplacera toujours vers le plus proche
+    if(targets.length > 0) {
 
-      val desiredVelocity = new Position(target.position.x - this.position.x, target.position.y - this.position.y)
+      val desiredVelocity = new Position(targets(0).position.x - this.position.x, targets(0).position.y - this.position.y)
       val normalizedDesiredVelocity = desiredVelocity.normalize()
       val distanceToTarget = desiredVelocity.getDistance()
 
@@ -79,7 +81,12 @@ class LivingEntity (
     //TODO : use all different speeds
     this.position.x += normalizeDirection.x * speeds(0)._2
     this.position.y += normalizeDirection.y * speeds(0)._2
+  }
 
+
+
+  def setTargets(newTargets: List[LivingEntity]) = {
+    this.targets = newTargets.sortBy((target) => Position.distanceBetween(this.position, target.position)).take(maxTargets)
   }
 
   override def toString: String = "Name : " + name + ", HP : " + hp + ", Position : (" + position.x + ", " + position.y + ")"

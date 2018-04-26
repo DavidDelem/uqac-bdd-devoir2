@@ -60,7 +60,7 @@ $(function () {
     // WebSocket Client
     //----------------------
     
-    var webSocketClient = new WebSocket('ws://localhost:8089/fight');
+    var webSocketClient = new WebSocket('ws://127.0.0.1:8089/fight');
     webSocketClient.onmessage = function(e) {
         //If Scala program begins, clear fight
         if(e.data == "FightBeginning"){
