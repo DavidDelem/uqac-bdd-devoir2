@@ -238,9 +238,8 @@ Ce combat reprend les bases du premier combat, mais maintenant c'est plus compli
 ---
 
 <h4>Question ouverte, Comment gérer efficacement un système de distance 3D avec un graphe d’agents distribué? On met la distance sur le sommet? sur l’arête? problèmes de collision etc.</h4>
----
 
-Nous travaillons avec des vecteurs de distances. Chaque LivingEntity possède son vecteur de position. Ensuite, nous réalisons des calculs de distance en utilisant les propriétés d'un vecteur. Voici le code de la classe Position :
+Nous travaillons avec des vecteurs de distances. Chaque monstre possède son vecteur de position (donc chaque arrête). Ensuite, nous réalisons des calculs de distance en utilisant les propriétés d'un vecteur. Voici le code de la classe Position :
 
 ```scala
 class Position (var x: Double = 0, var y: Double = 0) extends Serializable {
@@ -271,4 +270,4 @@ object Position{
 
 La normalisation d'un vecteur est utilisée dans la méthode <i>move()</i> de la classe <i>LivingEntity.scala</i> pour orienter le déplacement du monstre vers sa cible.
 
-<b>Remarque :</b> Notre système de combat est en 2D, mais il serait facile de passer en 3D.
+<b>Remarque :</b> Notre système de combat est en 2D, mais il serait facile de passer en 3D. Il faudrait simplement rajouter un attribut "z" à notre classe <i>Position.scala</i> et l'intégrer dans les calculs de distance et normalisation de cette même classe. Le plus difficile serait de trouver et d'utiliser de manière efficace une technologie d'affichage 3D pour le rendu.
