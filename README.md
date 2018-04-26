@@ -175,7 +175,7 @@ val webSocketClient = WebSocket().open("ws://localhost:8089/fight")
 webSocketClient.send(net.liftweb.json.Serialization.write(roundVerticesRDD))
 ```
 
-<b>5.2 (Optionnel) Il est possible d'afficher les vertices dans la console du programme Scala en décommentant la ligne suivante :</b>
+<b>5.2 (Optionnel) Il est possible d'afficher les vertices à chaque round dans la console du programme Scala en décommentant la ligne suivante :</b>
 
 ```scala
 GraphConsole.printLivingEntityGraphVertices(myGraph)
@@ -193,29 +193,32 @@ L'affichage en console est du type :
 <b>5
     . On vérifie les conditions d'arrêt</b>
 - On compte le nombre d'alliés et d'ennemis encore vivant en faisant un filter suivi d'un count.
-- Si il reste 0 ennemis: Pito est sauvé :D
-- Si il reste 0 alliés: Solar est mort, Pito à perdu :(
-- Sinon, on continue la boucle pour faire une nouvelle itération.
+- Si il reste 0 ennemi: Pito est sauvé :D
+- Si il reste 0 allié: Solar est mort, Pito à perdu :(
+- Sinon, on continue la boucle pour faire une nouvelle itération jusqu'au nombre MAX d'itérations.
 
 ```scala
-val nbBadGuysAlive = myGraph.vertices.filter{vertex =>vertex._2.team =="BadGuys" && vertex._2.hp >0}.count
-val nbGoodGuysAlive = myGraph.vertices.filter{vertex =>vertex._2.team =="GoodGuys" && vertex._2.hp >0}.count
+val nbBadGuysAlive = myGraph.vertices.filter{ vertex => vertex._2.team == "BadGuys" && vertex._2.hp > 0}.count
+val nbGoodGuysAlive = myGraph.vertices.filter{ vertex =>  vertex._2.team == "GoodGuys" && vertex._2.hp > 0}.count
 
 if(nbBadGuysAlive == 0){
-    println("END OF LOOP : Solar successfully saved Pito :D")
-    return
+  println("END OF LOOP : Solar successfully saved Pito :D")
+  return
 }
 else if(nbGoodGuysAlive == 0){
-    println("END OF LOOP : Unfortunatly, Solar and Pito died! Bad guys won :(")
-    return
+  println("END OF LOOP : Unfortunatly, Solar and Pito died! Bad guys won :(")
+  return
 }
+else if (roundCounter == maxIterations) return
 ```
 
-Voici le résultat final, la plupart du temps Pito est sauvé car le Solar est trés puissant grâce à son bouclier et sa regénération ! Il faut quand même une quarantaine de rounds pour tuer tout les énemis (les Double Axe Fury sont trés résistants).
+Voici le résultat final, la plupart du temps Pito est sauvé car le Solar est trés puissant grâce à son bouclier et sa régénération ! Il faut quand même une quarantaine de rounds pour tuer tout les ennemis (les Double Axe Fury sont très résistants).
 
 <p align="center">
   <img src="_imgreadme/victoire.png" width="800px"/>
 </p>
+
+<b>FightGUI : interface graphique de combat</b>
 
 Nous avons également fait un affichage graphique mais dans un autre langage (jQuery, PHP et HTML). Les données sont transférées à l'interface via Websocket en temps réel pour un affichage du combat en live. <a href="https://docs.google.com/document/d/1FYRVSCEYBRJ9QSq5nRjY9qPYKdYzW8SwYfZ03rMwpbw/edit?usp=sharing">Cliquer ici</a> pour voir les instructions de configuration et de lancement de l'interface. Voici le résultat:
 
