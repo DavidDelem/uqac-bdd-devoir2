@@ -8,6 +8,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.graphx.{EdgeContext, Graph, TripletFields}
 import net.liftweb.json._
 import org.apache.commons.io.FileUtils
+import org.jfarcand.wcs.{TextListener, WebSocket}
 
 class Game extends Serializable {
 
@@ -21,6 +22,16 @@ class Game extends Serializable {
     var roundCounter = 0
     val fields = new TripletFields(true, true, true) //join strategy
     implicit val formats: DefaultFormats.type = DefaultFormats
+
+    //WebSocket Client to send real-time data to the GUI
+    val webSocketClient = WebSocket()
+      .open("ws://localhost:8080/fight")
+      .listener(new TextListener {
+        override def onOpen(){ println("WSClient connected") }
+        override def onClose(){ println("WSClient disconnected") }
+        override def onMessage(message: String): Unit = {println("Message = " + message)}
+        override def onError(t: Throwable): Unit = {println("Error = " + t)}
+      })
 
     def gameLoop(): Unit = {
 
@@ -126,12 +137,10 @@ class Game extends Serializable {
           vertex._2.hurtDuringRound)
         )).collect()
 
-        val writer = new PrintWriter(new File("FightGUI/fight1/roundJSON/round"+roundCounter+".json"))
-        writer.write(net.liftweb.json.Serialization.write(roundVerticesRDD))
-        writer.close()
+        webSocketClient.send(net.liftweb.json.Serialization.write(roundVerticesRDD))
 
         // Print graph
-        GraphConsole.printLivingEntityGraphVertices(myGraph)
+        //GraphConsole.printLivingEntityGraphVertices(myGraph)
 
         //------------------------
         // END LOOP CONDITIONS
@@ -156,8 +165,13 @@ class Game extends Serializable {
 
     }
 
-    gameLoop() //execute loop
-    myGraph //return the result graph
+    //execute loop
+    gameLoop()
+    //close & shutdown WS client
+    webSocketClient.close
+    webSocketClient.shutDown
+    //return the result graph
+    myGraph
   }
 
 

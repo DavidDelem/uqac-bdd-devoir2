@@ -6,6 +6,6 @@ object Constants {
 
   //Starting positions
   val goodGuyCircleRadius = 20
-  val badGuyCircleRadius = 50
+  val badGuyCircleRadius = 150
 
 }
