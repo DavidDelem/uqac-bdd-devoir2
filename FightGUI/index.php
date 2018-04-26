@@ -1,4 +1,9 @@
-<!doctype html>
+<?php
+
+shell_exec('php WebSocketServer.php >> ' + sys_get_temp_dir());
+
+
+echo '<!doctype html>
 <html lang="fr">
     <head>
         <meta charset="utf-8">
@@ -37,4 +42,6 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
         <script src="PitoGUI.js"></script>
     </body>
-</html>
+</html>';
+
+?>
