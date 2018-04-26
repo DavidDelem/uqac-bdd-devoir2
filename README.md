@@ -191,7 +191,7 @@ Voici le résultat final, la plupart du temps Pito est sauvé car le Solar est t
   <img src="_imgreadme/victoire.png" width="800px"/>
 </p>
 
-Nous avons également fait un affichage graphique mais dans un autre langage (jQuery et HTML). Lorsque la boucle est terminée, on toutes les étapes du graphe dans un fichier json. En ouvrant la page HTML (sur un serveur web), on voit bien le combat visuellement:
+Nous avons également fait un affichage graphique mais dans un autre langage (jQuery, PHP et HTML). Les données sont transférées à l'interface via Websocket en temps réel pour un affichage du combat en live. <a href="https://docs.google.com/document/d/1FYRVSCEYBRJ9QSq5nRjY9qPYKdYzW8SwYfZ03rMwpbw/edit?usp=sharing">Cliquer ici</a> pour voir les instructions de configuration et de lancement de l'interface. Voici le résultat:
 
 GIF ANIME
 
@@ -201,7 +201,7 @@ GIF ANIME
 
 `Ce qu'on a fait`<br>
 
-Ce combat reprends les bases du premier, mais maintenant c'est plus compliqué ! Il y a beaucoup de monstres alors on créé certains RDD à partir d'un array créé avec une boucle for. Il y a aussi de nouvelles attaques pour les monstres.
+Ce combat reprends les bases du premier, mais maintenant c'est plus compliqué ! Il y a beaucoup de monstres alors on créé certains RDD à partir d'un array créé avec une boucle for. Il y a aussi de nouvelles attaques pour les monstres et un dragon. On ne va pas tout réexpliquer en détail car c'est exactement le même principe que le combat 1. On peut ausi visualiser le combat 2 via l'interface (qui s'adapte automatiquement quelque soit le combat), il suffit de lancer le combat 2 au lieu du combat 1. Voici le résultat:
 
 
 ---
