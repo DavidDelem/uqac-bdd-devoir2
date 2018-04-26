@@ -38,7 +38,7 @@ Crawler: <i>crawlers/crawler.py</i> &nbsp;&nbsp; - &nbsp;&nbsp; Json obtenu: <i>
 Code scala: <i>src/main/scala/Exercice1</i><br>
 
 `Ce qu'on a fait`<br>
-Nous avons mis les données crawlées dans un RDD Spark pour que toutes les opérations puissent être parallélisées entre nos 4 machines. Pour cela, on défini un Master et des Slaves, quelqu'un lance le master puis les Slaves font la commande suivante pour le rejoindre: <i>./spark-class org.apache.spark.deploy.worker.Worker spark://IP_MASTER:PORT</i>. Depuis l'interface on peut voir que les slaves ont bien réussi à rejoindre le master et la running application pour lesquelles les opérations sont parallélisées:
+Nous avons mis les données crawlées dans un RDD Spark pour que toutes les opérations puissent être parallélisées entre nos 4 machines. Pour cela, on défini un Master et des Workers, quelqu'un lance le master puis les Workers font la commande suivante pour le rejoindre: <i>./spark-class org.apache.spark.deploy.worker.Worker spark://IP_MASTER:PORT</i>. Depuis l'interface on peut voir que les workers ont bien réussi à rejoindre le master et la running application pour lesquelles les opérations sont parallélisées:
 <p align="center">
   <img src="_imgreadme/cluster.PNG" width="700px"/><br>
   <i>L'interface de spark ou l'on voit la conso de nos workers lors de la parallélisation des tâches</i>
@@ -46,7 +46,7 @@ Nous avons mis les données crawlées dans un RDD Spark pour que toutes les opé
 
 <p align="center">
   <img src="_imgreadme/connexionworker.png" width="700px"/> <br>
-  <i>La connexion d'un Slave au Master</i>
+  <i>La connexion d'un Worker au Master</i>
 </p>
 
 ---
