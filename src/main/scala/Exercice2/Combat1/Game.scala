@@ -1,13 +1,10 @@
 package Exercice2.Combat1
 
-import java.io.{File, PrintWriter}
-
 import Exercice2.{Link, LivingEntity, LivingEntityPrototype}
 import Exercice2.Utils.{GraphConsole, Position}
 import org.apache.spark.SparkContext
 import org.apache.spark.graphx.{EdgeContext, Graph, TripletFields}
 import net.liftweb.json._
-import org.apache.commons.io.FileUtils
 import org.jfarcand.wcs.{TextListener, WebSocket}
 
 class Game extends Serializable {
@@ -25,7 +22,7 @@ class Game extends Serializable {
 
     //WebSocket Client to send real-time data to the GUI
     val webSocketClient = WebSocket()
-      .open("ws://localhost:8080/fight")
+      .open("ws://localhost:8089/fight")
       .listener(new TextListener {
         override def onOpen(){ println("WSClient connected") }
         override def onClose(){ println("WSClient disconnected") }
@@ -33,10 +30,9 @@ class Game extends Serializable {
         override def onError(t: Throwable): Unit = {println("Error = " + t)}
       })
 
-    def gameLoop(): Unit = {
+    webSocketClient.send("FightBeginning");
 
-      FileUtils.deleteDirectory(new File("FightGUI/fight1/roundJSON/"))
-      val newDir = new File("FightGUI/fight1/roundJSON/").mkdirs()
+    def gameLoop(): Unit = {
 
       while (true) {
 

@@ -44,13 +44,13 @@ $(function () {
     // WebSocket Client
     //----------------------
     
-    var webSocketClient = new WebSocket('ws://localhost:8080/fight');
+    var webSocketClient = new WebSocket('ws://localhost:8089/fight');
     webSocketClient.onmessage = function(e) {
         
         console.log(e.data);
         
         //If Scala program begins, clear fight
-        if(e.data == "Connected"){
+        if(e.data == "FightBeginning"){
             rounds = [];
             isFightLaunched = false;
             $("#fight").html("");

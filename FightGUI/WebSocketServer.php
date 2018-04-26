@@ -15,7 +15,6 @@ class WSFight implements MessageComponentInterface {
     public function onOpen(ConnectionInterface $conn) {
         echo "Connected";
         $this->clients->attach($conn);
-        foreach ($this->clients as $client) $client->send("Connected");
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
@@ -35,8 +34,8 @@ class WSFight implements MessageComponentInterface {
     }
 }
 
-// Run the server application through the WebSocket protocol on port 8080
-$app = new Ratchet\App('localhost', 8080);
+// Run the server application through the WebSocket protocol on port 8089
+$app = new Ratchet\App('localhost', 8089);
 $app->route('/fight', new WSFight);
 $app->run();
 
