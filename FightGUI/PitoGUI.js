@@ -20,7 +20,19 @@ $(function () {
         offsetX = parseFloat($('input[name="offsetX"]').val());
         offsetY = parseFloat($('input[name="offsetY"]').val());
     });
-    
+
+    /* input label style */
+
+    $(".input-effect input").each(function() {
+        $(this).addClass("has-content");
+    });
+
+    $(".input-effect input").focusout(function() {
+        if($(this).val() != "") $(this).addClass("has-content");
+        else $(this).removeClass("has-content");
+    });
+
+
     //----------------------
     // Rounds variables
     //----------------------

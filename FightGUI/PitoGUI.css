@@ -1,14 +1,17 @@
 #params{
-    width: 80%;
-    border: 1px solid black;
+    width: 90%;
     padding: 10px;
     text-align: center;
-    margin: 10px auto 30px auto;
+    margin: 10px auto 20px auto;
+    font-family: 'Roboto', arial;
+    font-weight: 300;
 }
 
 #params h1{
     margin-top: 0;
+    font-weight: 100;
 }
+
 
 #params table{
     margin: auto;
@@ -21,15 +24,17 @@
 
 #changeDisplay{
     border-radius: 3px;
-    border: 2px solid #27ae60;
-    background-color: #2ecc71;
-    padding: 5px 10px 5px 10px;
-    color: #ecf0f1;
+    border: 0px solid #ccc;
+    background-color: #ccc;
+    padding: 8px 15px 8px 15px;
+    color: #fff;
     cursor: pointer;
+    transition: all 0.15s ease;
 }
 
 #changeDisplay:hover{
-    background-color: #27ae60;
+    background-color: #3399FF;
+    transition: all 0.15s ease;
 }
 
 #fightContainer{
@@ -37,7 +42,7 @@
     background-color: #fafafa;
     width: 80%;
     min-width: 300px;
-    height: 60vh;
+    height: 72vh;
     min-height: 300px;
     overflow: scroll;
     margin: auto;
@@ -67,7 +72,7 @@
     font-size: 12px;
     line-height: 30px;
     color: white;
-    font-weight: bold;
+    font-weight: 500;
 }
 
 .GoodGuys{
@@ -103,3 +108,16 @@
     background-color: #f1c40f;
   }
 }
+
+
+/* input styles */
+
+:focus{outline: none;}
+.col-3{text-align: left; display: inline-block; width: 170px; margin: 15px 20px; position: relative;} /* necessary to give position: relative to parent. */
+input[type="text"]{font: 15px/24px "Roboto", Arial, sans-serif; color: #333; width: 100%; box-sizing: border-box; letter-spacing: 1px;}
+.effect-16 {border: 0; padding: 4px 0; border-bottom: 1px solid #ccc; background-color: transparent;}
+.effect-16 ~ .focus-border{position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background-color: #3399FF; transition: 0.4s;}
+.effect-16:focus ~ .focus-border,
+.has-content.effect-16 ~ .focus-border{width: 100%; transition: 0.4s;}
+.effect-16 ~ label{position: absolute; left: 0; width: 100%; top: 9px; color: #aaa; transition: 0.3s; z-index: -1; letter-spacing: 0.5px;}
+.effect-16:focus ~ label, .has-content.effect-16 ~ label{top: -16px; font-size: 12px; color: #3399FF; transition: 0.3s;}
