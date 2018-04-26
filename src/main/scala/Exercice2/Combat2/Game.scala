@@ -74,7 +74,6 @@ class Game extends Serializable {
           mergeTargetMsg,
           fields
         )
-        //targetMessages.collect()
 
         myGraph = myGraph.joinVertices(targetMessages) {
 
@@ -95,8 +94,6 @@ class Game extends Serializable {
           mergeDamageMsg,
           fields
         )
-
-        //damageMessages.collect()
 
         myGraph = myGraph.joinVertices(damageMessages) {
 
