@@ -270,3 +270,5 @@ object Position{
 ```
 
 La normalisation d'un vecteur est utilisée dans la méthode <i>move()</i> de la classe <i>LivingEntity.scala</i> pour orienter le déplacement du monstre vers sa cible.
+
+<b>Remarque :</b> Notre système de combat est en 2D, mais il serait facile de passer en 3D.
