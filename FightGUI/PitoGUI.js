@@ -93,14 +93,7 @@ $(function () {
         var round = rounds.shift();
         
         //If there is not more round to proceed
-        if(round == null){
-            //Clear hurt entities
-            $(".Hurt").each(function(){
-                $(this).removeClass("Hurt");
-            });
-            
-            return;
-        }
+        if(round == null) return;
         
         else{
             
