@@ -88,10 +88,18 @@ C'est un combat entre le Solar et les monstres pour protéger Pito, en utilisant
 
 <b>1. Tous les 10 rounds, on enlève les monstres morts du RDD et on réalise un checkpoint() sur le RDD pour reset son lineage Graph.</b>
 
+```scala
+if(roundCounter%10==0){
+    myGraph = myGraph.subgraph(vpred = (_, attr) =>  attr.hp > 0)
+    myGraph.checkpoint()
+}
+```
+
 <b>2. Pour chaque monstre, on commence par réaliser les actions qui ne dépendent que de lui de manière isolée :</b>
 - Régénération
 - Déplacement (en fonction de la vitesse de chaque monstre)
 - Etat touché pendant le round remis à false (utile pour l'affichage)
+
 
 ```scala
 val newVerticesMove = myGraph.vertices.map(vertex => {
