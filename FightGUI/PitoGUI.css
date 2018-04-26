@@ -32,7 +32,7 @@
     background-color: #27ae60;
 }
 
-#fight{
+#fightContainer{
     position: relative;
     background-color: #fafafa;
     width: 80%;
@@ -41,6 +41,12 @@
     min-height: 300px;
     overflow: scroll;
     margin: auto;
+    z-index: 1;
+}
+
+#fight{
+    min-width: 2000px;
+    min-height: 2000px;
 }
 
 

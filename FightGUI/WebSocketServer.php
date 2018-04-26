@@ -15,16 +15,17 @@ class WSFight implements MessageComponentInterface {
     public function onOpen(ConnectionInterface $conn) {
         echo "Connected";
         $this->clients->attach($conn);
+        foreach ($this->clients as $client) $client->send("Connected");
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
-            foreach ($this->clients as $client) {
-                if ($from != $client) $client->send($msg);
-            }
+        foreach ($this->clients as $client) {
+            if ($from != $client) $client->send($msg);
+        }
     }
 
     public function onClose(ConnectionInterface $conn) {
-        echo "Discconnected";
+        echo "Disconnected";
         $this->clients->detach($conn);
     }
 

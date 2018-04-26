@@ -5,6 +5,9 @@ var offsetY = 400;
 
 $(function () {
     
+    //----------------------
+    // Inputs form
+    //----------------------
     
     $('input[name="milliSecBetweenRound"]').val(milliSecBetweenRound);
     $('input[name="zoom"]').val(zoom);
@@ -18,38 +21,65 @@ $(function () {
         offsetY = parseFloat($('input[name="offsetY"]').val());
     });
     
+    //----------------------
+    // Rounds variables
+    //----------------------
     
     var rounds = [];
-    var launched = false;
+    var isFightLaunched = false;
+    
+    //----------------------
+    // WebSocket Client
+    //----------------------
     
     var webSocketClient = new WebSocket('ws://localhost:8080/fight');
     webSocketClient.onmessage = function(e) {
         
-        rounds.push(JSON.parse(e.data));
+        console.log(e.data);
         
-        if(!launched){
-            launched = true;
-            processRound(true);
+        //If Scala program begins, clear fight
+        if(e.data == "Connected"){
+            rounds = [];
+            isFightLaunched = false;
+            $("#fight").html("");
+        }
+        //Else Scala program is sending data
+        else{
+            
+            rounds.push(JSON.parse(e.data));
+            
+            //First round
+            if(!isFightLaunched){
+                isFightLaunched = true;
+                processRound(true);
+            }
         }
     };
     webSocketClient.onopen = function(e) { console.log("webSocketClient Connected"); };
     webSocketClient.onclose = function(e) {console.log("webSocketClient Disconnected"); };
     webSocketClient.onerror = function(e) { console.log("webSocketClient Error : " + e); };
-
+    
+    //----------------------
+    // Proceed one round
+    //----------------------
     
     function processRound(firstRound){
         
         var round = rounds.shift();
         
+        //If there is not more round to proceed
         if(round == null) return;
         
         else{
             
+            //Clear area if first round
+            //if(firstRound) $("#fight").html("");
+            
             round.forEach(function(vertex){
 
-                //Draw LivingEntities if first round
-                if(firstRound)  $("#fight").append(drawLivingEntity(vertex["_2"]));
-                //Update with other rounds
+                //Draw LivingEntity if first round
+                if(firstRound) $("#fight").append(drawLivingEntity(vertex["_2"]));
+                //Other rounds -> update
                 else{
                     var livingEntityContainer = $(`#${vertex["_2"]["id"]}`);
                     var livingEntityCircle = livingEntityContainer.find('div.LivingEntityCircle');
@@ -78,12 +108,22 @@ $(function () {
         }
     }
     
+    //----------------------
+    // Drawn one LivingEntity
+    //----------------------
     
     function drawLivingEntity(livingEntity){
-        return `<div class="LivingEntityContainer" id = "${livingEntity["id"]}" style="left: ${livingEntity["position"]["x"]*zoom + offsetX}px; top: ${livingEntity["position"]["y"]*zoom + offsetY}px;">
+        var str = `<div class="LivingEntityContainer" id = "${livingEntity["id"]}" style="left: ${livingEntity["position"]["x"]*zoom + offsetX}px; top: ${livingEntity["position"]["y"]*zoom + offsetY}px; z-index: `;
+        
+        if(livingEntity["team"] == "BadGuys") str += '2';
+        else str += '3';
+        
+        str += `;">
             <div class="${livingEntity["team"]} LivingEntityCircle">${livingEntity["hp"]}</div>
             <div class="text">${livingEntity["name"]}</div>
         </div>`;
+        
+        return str;
     }
     
 }); 
