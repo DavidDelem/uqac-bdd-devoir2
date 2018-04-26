@@ -30,7 +30,7 @@ class Game extends Serializable {
         override def onError(t: Throwable): Unit = {println("Error = " + t)}
       })
 
-    webSocketClient.send("FightBeginning");
+    webSocketClient.send("FightBeginning")
 
     def gameLoop(): Unit = {
 
@@ -44,7 +44,7 @@ class Game extends Serializable {
         //--------------------------------------
 
         if(roundCounter%10==0){
-          myGraph = myGraph.subgraph(vpred = (id, attr) =>  attr.hp > 0)
+          myGraph = myGraph.subgraph(vpred = (_, attr) =>  attr.hp > 0)
           myGraph.checkpoint()
         }
 

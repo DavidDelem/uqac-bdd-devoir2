@@ -32,11 +32,6 @@
     transition: all 0.15s ease;
 }
 
-#changeDisplay:hover{
-    background-color: #3399FF;
-    transition: all 0.15s ease;
-}
-
 #fightContainer{
     position: relative;
     background-color: #fafafa;

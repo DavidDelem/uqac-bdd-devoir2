@@ -2,6 +2,7 @@ var milliSecBetweenRound = 1000;
 var zoom = 2;
 var offsetX = 400;
 var offsetY = 400;
+var minMilliSecBetweenRound = 500;
 
 $(function () {
     
@@ -14,11 +15,26 @@ $(function () {
     $('input[name="offsetX"]').val(offsetX);
     $('input[name="offsetY"]').val(offsetY);
     
-    $("#changeDisplay").click(function(){
-        milliSecBetweenRound = parseInt($('input[name="milliSecBetweenRound"]').val());
+    $('input[name="milliSecBetweenRound"]').change(function(){
+        var newVal = parseInt($('input[name="milliSecBetweenRound"]').val());
+        //Be sure to have milliSecBetweenRound > time for the Scala program to stream one round
+        if(newVal < minMilliSecBetweenRound){
+            newVal = minMilliSecBetweenRound;
+            $(this).val(newVal);
+        }
+        milliSecBetweenRound = newVal;
+    });
+    
+    $('input[name="zoom"]').change(function(){
         zoom = parseFloat($('input[name="zoom"]').val());
-        offsetX = parseFloat($('input[name="offsetX"]').val());
-        offsetY = parseFloat($('input[name="offsetY"]').val());
+    });
+    
+    $('input[name="offsetX"]').change(function(){
+        offsetX = parseInt($('input[name="offsetX"]').val());
+    });
+    
+    $('input[name="offsetY"]').change(function(){
+        offsetY = parseInt($('input[name="offsetY"]').val());
     });
 
     /* input label style */
@@ -46,9 +62,6 @@ $(function () {
     
     var webSocketClient = new WebSocket('ws://localhost:8089/fight');
     webSocketClient.onmessage = function(e) {
-        
-        console.log(e.data);
-        
         //If Scala program begins, clear fight
         if(e.data == "FightBeginning"){
             rounds = [];
@@ -59,7 +72,7 @@ $(function () {
         else{
             
             rounds.push(JSON.parse(e.data));
-            
+
             //First round
             if(!isFightLaunched){
                 isFightLaunched = true;
@@ -80,7 +93,14 @@ $(function () {
         var round = rounds.shift();
         
         //If there is not more round to proceed
-        if(round == null) return;
+        if(round == null){
+            //Clear hurt entities
+            $(".Hurt").each(function(){
+                $(this).removeClass("Hurt");
+            });
+            
+            return;
+        }
         
         else{
             
