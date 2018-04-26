@@ -5,7 +5,31 @@
         <title>Pito GUI</title>
         <link rel="stylesheet" type="text/css" href="PitoGUI.css">
     </head>
-    <body>        
+    <body>
+        
+        <div id="params">
+            <h1>Display parameters</h1>
+            <table>
+                <tr>
+                    <td>milliSecBetweenRound :</td>
+                    <td><input type="text" name="milliSecBetweenRound" value=""></td>
+                </tr>
+                <tr>
+                    <td>zoom :</td>
+                    <td><input type="text" name="zoom" value=""></td>
+                </tr>
+                <tr>
+                    <td>offsetX :</td>
+                    <td><input type="text" name="offsetX" value=""></td>
+                </tr>
+                <tr>
+                    <td>offsetY :</td>
+                    <td><input type="text" name="offsetY" value=""></td>
+                </tr>
+            </table>
+            <button id="changeDisplay">Apply</button>
+        </div>
+        <div id="fight"></div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
         <script src="PitoGUI.js"></script>
     </body>

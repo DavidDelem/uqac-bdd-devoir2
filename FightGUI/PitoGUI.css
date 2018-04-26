@@ -1,3 +1,49 @@
+#params{
+    width: 80%;
+    border: 1px solid black;
+    padding: 10px;
+    text-align: center;
+    margin: 10px auto 30px auto;
+}
+
+#params h1{
+    margin-top: 0;
+}
+
+#params table{
+    margin: auto;
+    margin-bottom: 10px;
+}
+
+#params table tr td:first-child{
+    text-align: right;
+}
+
+#changeDisplay{
+    border-radius: 3px;
+    border: 2px solid #27ae60;
+    background-color: #2ecc71;
+    padding: 5px 10px 5px 10px;
+    color: #ecf0f1;
+    cursor: pointer;
+}
+
+#changeDisplay:hover{
+    background-color: #27ae60;
+}
+
+#fight{
+    position: relative;
+    background-color: #fafafa;
+    width: 80%;
+    min-width: 300px;
+    height: 60vh;
+    min-height: 300px;
+    overflow: scroll;
+    margin: auto;
+}
+
+
 .LivingEntityContainer{
     display: inline-block;
     position: absolute;
@@ -11,6 +57,11 @@
     -moz-border-radius: 25px;
     border-radius: 25px;
     border: 1px solid black;
+    text-align: center;
+    font-size: 12px;
+    line-height: 30px;
+    color: white;
+    font-weight: bold;
 }
 
 .GoodGuys{
@@ -22,7 +73,6 @@
 }
 
 .Hurt{
-    /*background: #e67e22 !important;*/
     -webkit-animation: hurtBlink 0.5s infinite !important;  /* Safari 4+ */
     -moz-animation: hurtBlink 0.5s infinite !important;  /* Fx 5+ */
     -o-animation: hurtBlink 0.5s infinite !important;  /* Opera 12+ */
