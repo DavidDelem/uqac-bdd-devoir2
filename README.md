@@ -84,53 +84,57 @@ Nous l’avons également fait pour tous les sorts (bonus) en faisant un groupBy
 
 `Ce qu'on a fait`<br>
 
-C'est un combat entre le Solar et les monstres pour protéger Pito, en utilisant GraphX de Spark. Le code spécifique au combat 1 se trouve dans  <i>src/main/scala/Exercice2/Combat1</i> et le code partagé des deux combats (comme le bestiaire et les utilitaires) se trouve un niveau plus haut dans <i>src/main/scala/Exercice2</i>.
+C'est un combat entre le Solar et les monstres pour protéger Pito, en utilisant GraphX de Spark. On commence par créer nos RDD de vertex et de edge dans <i>Combat1.scala</i>, puis on appelle la boucle principale qui se trouve dans <i>Game.scala</i>. On réalise un certain nombre d'itérations de cette boucle et lors de chaque itération, différentes étapes font évoluer le graphe:
 
-On commence par créer nos RDD de vertex et de edge dans <i>Combat1.scala</i>, puis on appelle la boucle principale qui se trouve dans <i>Game.scala</i>. On réalise un certain nombre d'itérations de cette boucle et lors de chaque itération, différentes étapes font évoluer le graphe:
+<b>1. Tous les 10 rounds, on enlève les monstres morts du RDD et on réalise un checkpoint() sur le RDD pour reset son lineage Graph.</b>
 
-<b>1. Pour chaque monstre, on commence par vérifier si on a besoin de faire certaines choses</b>
-- Regénération (en vérité seul le Solar va se regénérer puisque la regénération des autres est à zéro).
-- Déplacement (en fonction de la vitesse de chaque monstre).
+<b>2. Pour chaque monstre, on commence par réaliser les actions qui ne dépendent que de lui de manière isolée :</b>
+- Régénération
+- Déplacement (en fonction de la vitesse de chaque monstre)
+- Etat touché pendant le round remis à false (utile pour l'affichage)
 
 ```scala
 val newVerticesMove = myGraph.vertices.map(vertex => {
-    vertex._2.regenerate()
-    vertex._2.move()
+    if(vertex._2.hp > 0){
+        vertex._2.regenerate()
+        vertex._2.move()
+        vertex._2.hurtDuringRound = false
+    }
     vertex
 })
+
 myGraph = Graph(newVerticesMove, myGraph.edges)
 ```
 
-<i>A noter que toutes les fonctions qui regénérent, font les mouvements, calculent les dommages reçus ect... (comme regenerate() et move() ici) se trouvent dans LivingEntity (classe parente de tout les monstres).</i>
+<i>A noter que toutes les fonctions qui regénèrent, font les mouvements, calculent les dommages reçus ect... se trouvent dans LivingEntity (classe parente de tout les monstres).</i>
 
-<b>2. Pour chaque monstre, on choisi et on met à jours la cible à attaquer, de la façon suivante:</b>
+<b>3. Pour chaque monstre, on choisi et on met à jours la cible à attaquer, de la façon suivante:</b>
 - Dans le AgregateMessages, on détermine pour chaque monstre l'énnemi le plus interessant à attaquer.
 - Dans le JoinVertixes, on met à jours le monstre avec la bonne target (pour cela, on créé une nouvelle instance du bon type de monstre avec la nouvelle target, qu'on return pour remplacer la précédente pour que ce soit pris en compte, d'ou l'utilisation du design pattern Prototype).
 
 ```scala
-val targetMessages = myGraph.aggregateMessages[LivingEntity](
+val targetMessages = myGraph.aggregateMessages[(LivingEntity, Position)](
     sendTargetMsg,
     mergeTargetMsg,
     fields
 )
 
-targetMessages.collect()
-
 myGraph = myGraph.joinVertices(targetMessages) {
-    (_, fighter, target) => {
+
+    (_, fighter, tupleTarget) => {
+
         val newFighter = LivingEntityPrototype.create(fighter)
-        newFighter.target = target
+        newFighter.target = tupleTarget._1
         newFighter
     }
 }
 ```
 
-<i>Détail des fonction sendTargetMsg() et mergeTargetMsg() en bas de la boucle principale.</i>
+<i>Détail des fonctions sendTargetMsg() et mergeTargetMsg() en bas du fichier Game.scala</i>
 
-<b>3. On réalise les attaques en faisant perdre le nombre correct de HP:</b>
-
-- Dans le AgregateMessages, on fait le calcul des domages pour chaque monstre (principe du map reduce)
-- Dans le joinVertixes, on fait perdre les HP à chaque monstre (pour cela, on créé une nouvelle instance du bon type de monstre avec les nouveaux HP, qu'on return pour remplacer la précédente).
+<b>4. Chaque monstre subit la somme des dégâts des autres monstres qui l'attaquent:</b>
+- Dans le AgregateMessages, on fait le calcul des dommages que va recevoir chaque monstre
+- Dans le joinVertixes, on fait perdre les HP à chaque monstre (pour cela, on créé une nouvelle instance du bon type de monstre avec les nouveaux HP).
 
 ```scala
 val damageMessages = myGraph.aggregateMessages[Int](
@@ -139,23 +143,37 @@ val damageMessages = myGraph.aggregateMessages[Int](
     fields
 )
 
-damageMessages.collect()
-
 myGraph = myGraph.joinVertices(damageMessages) {
+
     (_, damageReceiver, damages) => {
-        val newDamageReceiver = LivingEntityPrototype.create(damageReceiver)
-        newDamageReceiver.takeDamage(damages)
-        newDamageReceiver
+
+        if(damages>0){
+            val newDamageReceiver = LivingEntityPrototype.create(damageReceiver)
+            newDamageReceiver.takeDamage(damages)
+            newDamageReceiver
+        }else
+            damageReceiver
+
     }
 }
 ```
-<i>Détail des fonction sendDamageMsg() et mergeDamageMsg() en bas de la boucle principale.</i>
+<i>Détail des fonction sendDamageMsg() et mergeDamageMsg() en bas du ficher Game.scala</i>
 
-<b>4. Le nouvel état du graphe est affichée dans la console.</b>
+<b>5. Les vertices sont streamées en Websocket sur <i>ws://localhost:8089/fight</i> :</b>
+
+```scala
+val webSocketClient = WebSocket().open("ws://localhost:8089/fight")
+
+webSocketClient.send(net.liftweb.json.Serialization.write(roundVerticesRDD))
+```
+
+<b>5.2 (Optionnel) Il est possible d'afficher les vertices dans la console du programme Scala en décommentant la ligne suivante :</b>
 
 ```scala
 GraphConsole.printLivingEntityGraphVertices(myGraph)
 ```
+
+L'affichage en console est du type :
 
 - Le nom du monstre (ID, HP, POSITION) --DISTANCE-A-SA-CIBLE--> le monstre qu'il attaque(ID, HP, POSITION)
 
