@@ -41,14 +41,17 @@ object Combat2 extends App {
   var goodGuyRad:Double = goodGuyAngle * (PI / 180.0)
   var badGuyRad:Double = badGuyAngle* (PI / 180.0)
 
+  val rnd = new scala.util.Random
+
+
   //Solar
   for (i <- 1 to 1) {
     protagonistBuffer += ((
       i,
       new Solar(
         new Position(
-          Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
-          Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
+          Constants.goodGuyMinX + rnd.nextInt( (Constants.goodGuyMaxX  - Constants.goodGuyMinX ) + 1 ),
+          Constants.goodGuyMinY + rnd.nextInt( (Constants.goodGuyMaxY  - Constants.goodGuyMinY ) + 1 )
         ),
         i.toInt
       )
@@ -64,8 +67,8 @@ object Combat2 extends App {
       i,
       new Planetar(
         new Position(
-          Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
-          Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
+          Constants.goodGuyMinX + rnd.nextInt( (Constants.goodGuyMaxX  - Constants.goodGuyMinX ) + 1 ),
+          Constants.goodGuyMinY + rnd.nextInt( (Constants.goodGuyMaxY  - Constants.goodGuyMinY ) + 1 )
         ),
         i.toInt
       )
@@ -74,15 +77,15 @@ object Combat2 extends App {
     goodGuyAngle += goodGuyInterval
     goodGuyRad = goodGuyAngle * (PI / 180.0)
   }
-
+//
   //2x Movanic Deva
   for (i <- 4 to 5) {
     protagonistBuffer += ((
       i,
       new MovanicDeva(
         new Position(
-          Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
-          Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
+          Constants.goodGuyMinX + rnd.nextInt( (Constants.goodGuyMaxX  - Constants.goodGuyMinX ) + 1 ),
+          Constants.goodGuyMinY + rnd.nextInt( (Constants.goodGuyMaxY  - Constants.goodGuyMinY ) + 1 )
         ),
         i.toInt
       )
@@ -91,15 +94,15 @@ object Combat2 extends App {
     goodGuyAngle += goodGuyInterval
     goodGuyRad = goodGuyAngle * (PI / 180.0)
   }
-
+//
   //5x Astral Deva
   for (i <- 6 to 10) {
     protagonistBuffer += ((
       i,
       new AstralDeva(
         new Position(
-          Constants.goodGuyCircleRadius * Math.cos(goodGuyRad),
-          Constants.goodGuyCircleRadius * Math.sin(goodGuyRad)
+          Constants.goodGuyMinX + rnd.nextInt( (Constants.goodGuyMaxX  - Constants.goodGuyMinX ) + 1 ),
+          Constants.goodGuyMinY + rnd.nextInt( (Constants.goodGuyMaxY  - Constants.goodGuyMinY ) + 1 )
         ),
         i.toInt
       )
@@ -115,8 +118,8 @@ object Combat2 extends App {
       i,
       new GreenGreatWyrmDragon(
         new Position(
-          Constants.badGuyCircleRadius * Math.cos(badGuyRad),
-          Constants.badGuyCircleRadius * Math.sin(badGuyRad)
+          Constants.badGuyMinX + rnd.nextInt( (Constants.badGuyMaxX  - Constants.badGuyMinX ) + 1 ),
+          Constants.badGuyMinY + rnd.nextInt( (Constants.badGuyMaxY  - Constants.badGuyMinY ) + 1 )
         ),
         i.toInt
       )
@@ -128,13 +131,12 @@ object Combat2 extends App {
 
   //200x Orc Barbarians
   for (i <- 12 to 211) {
-  //for (i <- 12 to 20) {
   protagonistBuffer += ((
       i,
       new GreataxeOrc(
         new Position(
-          Constants.badGuyCircleRadius * Math.cos(badGuyRad),
-          Constants.badGuyCircleRadius * Math.sin(badGuyRad)
+          Constants.badGuyMinX + rnd.nextInt( (Constants.badGuyMaxX  - Constants.badGuyMinX ) + 1 ),
+          Constants.badGuyMinY + rnd.nextInt( (Constants.badGuyMaxY  - Constants.badGuyMinY ) + 1 )
         ),
         i.toInt
       )
@@ -150,8 +152,8 @@ object Combat2 extends App {
       i,
       new AngelSlayer(
         new Position(
-          Constants.badGuyCircleRadius * Math.cos(badGuyRad),
-          Constants.badGuyCircleRadius * Math.sin(badGuyRad)
+          Constants.badGuyMinX + rnd.nextInt( (Constants.badGuyMaxX  - Constants.badGuyMinX ) + 1 ),
+          Constants.badGuyMinY + rnd.nextInt( (Constants.badGuyMaxY  - Constants.badGuyMinY ) + 1 )
         ),
         i.toInt
       )
