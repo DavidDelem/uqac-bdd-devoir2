@@ -30,7 +30,7 @@ class LivingEntity (
 
   // Regénération
   // On s'assure de ne pas dépasser les hp initiaux
-  def regenerate() : Unit = {
+  def regenerate() {
     this.hp = this.hp + this.regeneration
     if (this.hp > this.hpmax) this.hp = this.hpmax
   }
@@ -39,7 +39,6 @@ class LivingEntity (
 
     var attack: Attack = null
     val distance = Position.distanceBetween(this.position,target.position)
-
 
     if(melee != null && distance <= melee.minDistance) attack = melee
     else if(special != null && distance <= special.minDistance) attack = special
@@ -53,7 +52,7 @@ class LivingEntity (
   def computeNormalizedDirection(): Position = {
 
     //On se déplacera toujours vers le plus proche
-    if(targets.length > 0) {
+    if(targets.nonEmpty) {
 
       val desiredVelocity = new Position(targets(0).position.x - this.position.x, targets(0).position.y - this.position.y)
       val normalizedDesiredVelocity = desiredVelocity.normalize()
@@ -78,16 +77,14 @@ class LivingEntity (
   // Mouvements
   def move(){
     val normalizeDirection = computeNormalizedDirection()
-    //TODO : use all different speeds
     this.position.x += normalizeDirection.x * speeds(0)._2
     this.position.y += normalizeDirection.y * speeds(0)._2
   }
 
 
 
-  def setTargets(newTargets: List[LivingEntity]) = {
-    val t = newTargets.sortBy((target) => Position.distanceBetween(this.position, target.position)).take(maxTargets)
-    this.targets = t
+  def setTargets(newTargets: List[LivingEntity]) {
+    this.targets = newTargets.sortBy((target) => Position.distanceBetween(this.position, target.position)).take(maxTargets)
   }
 
   override def toString: String = "Name : " + name + ", HP : " + hp + ", Position : (" + position.x + ", " + position.y + ")"

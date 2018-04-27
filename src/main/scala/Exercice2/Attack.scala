@@ -18,9 +18,7 @@ class Attack(
     var damage = random.nextInt(maxDamages - minDamages) + minDamages
 
     //On peut mieux opti en scala mais au moins comme ça le calcul est clair
-    if(doIHit < targetArmor) {
-      damage = 0
-    }
+    if(doIHit < targetArmor) damage = 0
 
     if(attackNumber < accuracies.size - 1) attackNumber += 1
 

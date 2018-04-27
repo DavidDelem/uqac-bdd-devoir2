@@ -1,13 +1,9 @@
 package Exercice2.Combat2
 
-import java.io.File
-import java.lang.Math._
-
 import Exercice2.Bestiary._
-import Exercice2.Combat1.Combat1.sc
 import Exercice2.Utils.Position
-import Exercice2.{Link, LivingEntity}
-import org.apache.spark.graphx.{Edge, Graph, VertexId}
+import Exercice2.{Game, Link, LivingEntity}
+import org.apache.spark.graphx.{Edge, VertexId}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
@@ -17,7 +13,7 @@ import Exercice2.Utils.Constants
 
 object Combat2 extends App {
 
-  val appname = "Devoir 2 - Exercice 2 - Combat 1. Solar vs Éclaireurs Orcs"
+  val appname = "Devoir 2 - Exercice 2 - Combat 2. Solar vs Dragon"
   val master = "local"
   val conf = new SparkConf().setAppName(appname).setMaster(master)
   val sc = new SparkContext(conf)
@@ -26,23 +22,7 @@ object Combat2 extends App {
 
   var i:Long = 1
   val protagonistBuffer: ArrayBuffer[(VertexId, LivingEntity)] = ArrayBuffer()
-
-  //We put the good guy in circle around the village
-  //Then we put the bad guy in circle around them
-
-  val goodGuyNumber = 10.0
-  val badGuyNumber = 211.0
-  var goodGuyInterval:Double = 360.0/goodGuyNumber
-  var badGuyInterval:Double = 360.0/badGuyNumber
-
-  var goodGuyAngle:Double = 0.0
-  var badGuyAngle:Double = 0.0
-
-  var goodGuyRad:Double = goodGuyAngle * (PI / 180.0)
-  var badGuyRad:Double = badGuyAngle* (PI / 180.0)
-
   val rnd = new scala.util.Random
-
 
   //Solar
   for (i <- 1 to 1) {
@@ -56,9 +36,6 @@ object Combat2 extends App {
         i.toInt
       )
     ))
-
-    goodGuyAngle += goodGuyInterval
-    goodGuyRad = goodGuyAngle * (PI / 180.0)
   }
 
   //2x Planetar
@@ -73,9 +50,6 @@ object Combat2 extends App {
         i.toInt
       )
     ))
-
-    goodGuyAngle += goodGuyInterval
-    goodGuyRad = goodGuyAngle * (PI / 180.0)
   }
 //
   //2x Movanic Deva
@@ -90,9 +64,6 @@ object Combat2 extends App {
         i.toInt
       )
     ))
-
-    goodGuyAngle += goodGuyInterval
-    goodGuyRad = goodGuyAngle * (PI / 180.0)
   }
 //
   //5x Astral Deva
@@ -107,9 +78,6 @@ object Combat2 extends App {
         i.toInt
       )
     ))
-
-    goodGuyAngle += goodGuyInterval
-    goodGuyRad = goodGuyAngle * (PI / 180.0)
   }
 
   //Green Great Wyrm Dragon
@@ -124,13 +92,10 @@ object Combat2 extends App {
         i.toInt
       )
     ))
-
-    badGuyAngle += badGuyInterval
-    badGuyRad = badGuyAngle * (PI / 180.0)
   }
 
-  //200x Orc Barbarians
-  for (i <- 12 to 211) {
+  //100x Orc Barbarians
+  for (i <- 12 to 111) {
   protagonistBuffer += ((
       i,
       new GreataxeOrc(
@@ -141,13 +106,10 @@ object Combat2 extends App {
         i.toInt
       )
     ))
-
-    badGuyAngle += badGuyInterval
-    badGuyRad = badGuyAngle * (PI / 180.0)
   }
 
   //10x Angel Slayer
-  for (i <- 212 to 221) {
+  for (i <- 112 to 121) {
     protagonistBuffer += ((
       i,
       new AngelSlayer(
@@ -158,19 +120,16 @@ object Combat2 extends App {
         i.toInt
       )
     ))
-
-    badGuyAngle += badGuyInterval
-    badGuyRad = badGuyAngle * (PI / 180.0)
   }
 
 
 
   val relationshipsBuffer: ArrayBuffer[Edge[Link]] = ArrayBuffer()
+
+  //Generate relationships
   for (j <- 0 to protagonistBuffer.length-2) {
     for {k <- j+1 to protagonistBuffer.length-1} {
 
-//  for (protagonist1 <- protagonistBuffer) {
-//    for (protagonist2 <- protagonistBuffer) {
       if(protagonistBuffer(j) == protagonistBuffer(k)){}
       else {
         if (protagonistBuffer(j)._2.team == protagonistBuffer(k)._2.team) {
@@ -188,12 +147,8 @@ object Combat2 extends App {
 
   // Create an RDD for the vertices
   val protagonist: RDD[(VertexId, (LivingEntity))] = sc.parallelize(protagonistBuffer)
-
   val relationships: RDD[Edge[Link]] = sc.parallelize(relationshipsBuffer)
 
-  // Build the initial Graph
-  val graph = Graph(protagonist, relationships)
-
   val game = new Game()
-  val resultsFight = game.execute(graph, sc, 1000)
+  val resultsFight = game.execute(protagonist, relationships, sc, 1000)
 }

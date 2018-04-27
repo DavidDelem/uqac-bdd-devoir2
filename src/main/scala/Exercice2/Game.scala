@@ -1,12 +1,12 @@
-package Exercice2.Combat2
+package Exercice2
 
-
-import Exercice2.{Link, LivingEntity, LivingEntityPrototype}
 import Exercice2.Utils.Position
-import org.apache.spark.SparkContext
-import org.apache.spark.graphx.{EdgeContext, Graph, TripletFields}
 import net.liftweb.json._
-import org.jfarcand.wcs.{TextListener, WebSocket}
+import org.apache.spark.SparkContext
+import org.apache.spark.graphx._
+import org.apache.spark.rdd.RDD
+import org.jfarcand.wcs.{Options, TextListener, WebSocket}
+
 
 class Game extends Serializable {
 
@@ -14,15 +14,23 @@ class Game extends Serializable {
   // EXECUTE GAME
   //--------------------
 
-  def execute(g: Graph[LivingEntity, Link], sc: SparkContext, maxIterations: Int): Graph[LivingEntity, Link] = {
+  def execute(protagonist: RDD[(VertexId, (LivingEntity))],
+              relationships: RDD[Edge[Link]],
+              sc: SparkContext,
+              maxIterations: Int
+             ): Graph[LivingEntity, Link] = {
 
-    var myGraph = g
+    var graph = Graph(protagonist, relationships)
     var roundCounter = 0
     val fields = new TripletFields(true, true, true) //join strategy
     implicit val formats: DefaultFormats.type = DefaultFormats
 
     //WebSocket Client to send real-time data to the GUI
-    val webSocketClient = WebSocket()
+    var options = new Options
+    options.idleTimeout =  15 * 60000
+    options.maxMessageSize =  15 * 8192
+
+    val webSocketClient = WebSocket(o=options)
       .open("ws://localhost:8089/fight")
       .listener(new TextListener {
         override def onOpen(){ println("WSClient connected") }
@@ -33,48 +41,49 @@ class Game extends Serializable {
 
     webSocketClient.send("FightBeginning")
 
-    def gameLoop(): Unit = {
+    def gameLoop() {
 
       while (true) {
         roundCounter+=1
         println("================ Battle round : " + roundCounter + " ================")
 
+        if(roundCounter%5==0) graph.checkpoint()
+        var roundGraph = graph
+
         //--------------------------------------
-        // CHECKPOINT + CLEAR ALL DEAD ENTITIES
+        // CLEAR ALL DEAD ENTITIES
         //--------------------------------------
 
-        if(roundCounter%10==0) myGraph.checkpoint()
-
-        myGraph = myGraph.subgraph(vpred = (_, attr) =>  attr.hp > 0)
-
+        roundGraph = roundGraph.subgraph(vpred = (_, attr) =>  attr.hp > 0)
 
         //--------------------
         // MOVING + REGENERATE UPDATE
         //--------------------
+
         if(roundCounter > 1){
 
-          val newVerticesMove = myGraph.vertices.map(vertex => {
-            if(vertex._2.hp > 0){
-              vertex._2.regenerate()
-              vertex._2.move()
-              vertex._2.hurtDuringRound = false
-            }
+          val newVertices = roundGraph.vertices.map(vertex => {
+            vertex._2.regenerate()
+            vertex._2.move()
+            vertex._2.hurtDuringRound = false
             vertex
           })
 
-          myGraph = Graph(newVerticesMove, myGraph.edges)
+          roundGraph = Graph(newVertices, roundGraph.edges)
+
         }
+
         //--------------------
         // TARGET UPDATE
         //--------------------
 
-        val targetMessages = myGraph.aggregateMessages[List[LivingEntity]](
+        val targetMessages = roundGraph.aggregateMessages[List[LivingEntity]](
           sendTargetMsg,
           mergeTargetMsg,
           fields
         )
 
-        myGraph = myGraph.joinVertices(targetMessages) {
+        roundGraph = roundGraph.joinVertices(targetMessages) {
 
           (_, fighter, allTargets) => {
 
@@ -88,13 +97,13 @@ class Game extends Serializable {
         // DAMAGE UPDATE
         //--------------------
 
-        val damageMessages = myGraph.aggregateMessages[Int](
+        val damageMessages = roundGraph.aggregateMessages[Int](
           sendDamageMsg,
           mergeDamageMsg,
           fields
         )
 
-        myGraph = myGraph.joinVertices(damageMessages) {
+        roundGraph = roundGraph.joinVertices(damageMessages) {
 
           (_, damageReceiver, damages) => {
 
@@ -112,7 +121,7 @@ class Game extends Serializable {
         // SAVE RDD ROUND FOR GUI (SERIALIZATION)
         //----------------------------------------
         //TODO: how to serialize without creating a new LivingEntity ?
-        val roundVerticesRDD = myGraph.vertices.map(vertex => (
+        val roundVerticesRDD = roundGraph.vertices.map(vertex => (
           vertex._1, new LivingEntity(
           vertex._2.id,
           vertex._2.name,
@@ -129,22 +138,17 @@ class Game extends Serializable {
           vertex._2.maxTargets,
           vertex._2.targets,
           vertex._2.hurtDuringRound)
-        )).collect()
+        ))
 
-        webSocketClient.send(net.liftweb.json.Serialization.write(roundVerticesRDD))
-
-        // Print graph
-        //GraphConsole.printLivingEntityGraphVertices(myGraph)
+        webSocketClient.send(net.liftweb.json.Serialization.write(roundVerticesRDD.collect()))
 
         //------------------------
         // END LOOP CONDITIONS
         //------------------------
 
         // Récupération du nombre d'alliés et ennemis toujours en vie
-        val nbBadGuysAlive = myGraph.vertices.filter{ vertex => vertex._2.team == "BadGuys" && vertex._2.hp > 0}.count
-        val nbGoodGuysAlive = myGraph.vertices.filter{ vertex =>  vertex._2.team == "GoodGuys" && vertex._2.hp > 0}.count
-        println("nbBadGuysAlive : " + nbBadGuysAlive)
-        println("nbGoodGuysAlive : " + nbGoodGuysAlive)
+        val nbBadGuysAlive = roundGraph.vertices.filter{ vertex => vertex._2.team == "BadGuys" && vertex._2.hp > 0}.count
+        val nbGoodGuysAlive = roundGraph.vertices.filter{ vertex =>  vertex._2.team == "GoodGuys" && vertex._2.hp > 0}.count
 
         // Conditions d'arrêt: victoire des ennemis ou des alliés
         if(nbBadGuysAlive == 0){
@@ -157,8 +161,8 @@ class Game extends Serializable {
         }
         else if (roundCounter == maxIterations) return
 
+        graph = roundGraph
       }
-
     }
 
     //execute loop
@@ -167,7 +171,7 @@ class Game extends Serializable {
     webSocketClient.close
     webSocketClient.shutDown
     //return the result graph
-    myGraph
+    graph
   }
 
 
@@ -201,13 +205,6 @@ class Game extends Serializable {
     if(triplet.dstAttr.targets.map(target => target.id).contains(triplet.srcAttr.id)) {
       triplet.sendToSrc(triplet.dstAttr.attackTarget(triplet.srcAttr))
     }
-
-//    if(triplet.srcAttr.target.id == triplet.dstAttr.id) {
-//      triplet.sendToDst(triplet.srcAttr.attackTarget())
-//    }
-//    if(triplet.dstAttr.target.id == triplet.srcAttr.id) {
-//      triplet.sendToSrc(triplet.dstAttr.attackTarget())
-//    }
   }
 
   // Deuxième fonction de l'aggregateMessages gérant les damages */
