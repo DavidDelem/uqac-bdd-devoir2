@@ -15,61 +15,55 @@ class GreenGreatWyrmDragon (position: Position, id: Int)
     position,
     "BadGuys",
     0,
-    List(("ft", 20), ("fly", 35), ("swim", 7)),
+    List(("ft", 15)),
     new Attack("tail slap", 25, 27, List(31), 5),
     null,
     new Attack("acid", 26, 27, List(999), 70),
     maxTargets = 3
   ){
 
-//  private var focus:LivingEntity = null
-//
-//  override def setTargets(newTargets: List[LivingEntity]) {
-//
-//    newTargets.find(target => target.id == 1) match {
-//      case Some(solar) => this.focus = solar
-//      case None => this.focus = null
-//    }
-//
-//    super.setTargets(newTargets)
-//  }
+  var focus:LivingEntity = null
 
-//  override def computeNormalizedDirection(): Position = {
-//
-//    //Choose which target to aim
-//    var targetToFollow:LivingEntity = null
-//
-//    if(focus != null){
-//      targetToFollow = focus
-//    }
-//    else if(targets.nonEmpty) targetToFollow = targets(0)
-//
-//    if(targetToFollow != null) {
-//
-//      val desiredVelocity = new Position(targetToFollow.position.x - this.position.x, targetToFollow.position.y - this.position.y)
-//      val normalizedDesiredVelocity = desiredVelocity.normalize()
-//      val distanceToTarget = desiredVelocity.getDistance()
-//
-//      if(distanceToTarget < Constants.nearTargetRadius){
-//
-//        if(distanceToTarget > Constants.stickDistance){
-//          normalizedDesiredVelocity.x *= (distanceToTarget/Constants.nearTargetRadius)
-//          normalizedDesiredVelocity.y *= (distanceToTarget/Constants.nearTargetRadius)
-//        }
-//        else{
-//          normalizedDesiredVelocity.x = 0
-//          normalizedDesiredVelocity.y = 0
-//        }
-//      }
-//      normalizedDesiredVelocity
-//    }
-//    else new Position(0,0)
-//  }
-//
-//  override def move(){
-//    val normalizeDirection = computeNormalizedDirection()
-//    this.position.x += normalizeDirection.x * speeds(1)._2
-//    this.position.y += normalizeDirection.y * speeds(1)._2
-//  }
+  override def setTargets(newTargets: List[LivingEntity]) {
+
+    newTargets.find(target => target.name == "Solar") match {
+      case Some(solar) => this.focus = solar
+      case None => this.focus = null
+    }
+
+    super.setTargets(newTargets)
+  }
+
+  override def computeNormalizedDirection(): Position = {
+
+    //Choose which target to aim
+    var targetToFollow:LivingEntity = null
+
+    if(focus != null){
+      targetToFollow = focus
+    }
+    else if(targets.nonEmpty) targetToFollow = targets(0)
+
+    if(targetToFollow != null) {
+
+      val desiredVelocity = new Position(targetToFollow.position.x - this.position.x, targetToFollow.position.y - this.position.y)
+      val normalizedDesiredVelocity = desiredVelocity.normalize()
+      val distanceToTarget = desiredVelocity.getDistance()
+
+      if(distanceToTarget < Constants.nearTargetRadius){
+
+        if(distanceToTarget > Constants.stickDistance){
+          normalizedDesiredVelocity.x *= (distanceToTarget/Constants.nearTargetRadius)
+          normalizedDesiredVelocity.y *= (distanceToTarget/Constants.nearTargetRadius)
+        }
+        else{
+          normalizedDesiredVelocity.x = 0
+          normalizedDesiredVelocity.y = 0
+        }
+      }
+      normalizedDesiredVelocity
+    }
+    else new Position(0,0)
+  }
 
 }

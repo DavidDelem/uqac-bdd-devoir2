@@ -13,7 +13,7 @@ class MovanicDeva (position: Position, id: Int)
     position,
     "GoodGuys",
     0,
-    List(("ft", 7), ("fly", 10)),
+    List(("ft", 7)),
     new Attack("+1 flaming greatsword", 8, 13, List(17, 12, 7), 5),
     null,
     null

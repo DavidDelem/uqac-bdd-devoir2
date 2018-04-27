@@ -14,7 +14,11 @@ object LivingEntityPrototype {
       case brutalWarlord:BrutalWarlord => newLivingEntity = new BrutalWarlord(brutalWarlord.position, brutalWarlord.id)
       case doubleAxeFury:DoubleAxeFury => newLivingEntity = new DoubleAxeFury(doubleAxeFury.position, doubleAxeFury.id)
       case greataxeOrc:GreataxeOrc => newLivingEntity = new GreataxeOrc(greataxeOrc.position, greataxeOrc.id)
-      case greenGreatWyrmDragon: GreenGreatWyrmDragon => newLivingEntity = new GreenGreatWyrmDragon(greenGreatWyrmDragon.position, greenGreatWyrmDragon.id)
+      case greenGreatWyrmDragon: GreenGreatWyrmDragon =>{
+        var dragon = new GreenGreatWyrmDragon(greenGreatWyrmDragon.position, greenGreatWyrmDragon.id)
+        dragon.focus = greenGreatWyrmDragon.focus
+        newLivingEntity = dragon
+      }
       case movanicDeva: MovanicDeva => newLivingEntity = new MovanicDeva(movanicDeva.position, movanicDeva.id)
       case orcWorgRider: OrcWorgRider => newLivingEntity = new OrcWorgRider(orcWorgRider.position, orcWorgRider.id)
       case planetar: Planetar => newLivingEntity = new Planetar(planetar.position, planetar.id)

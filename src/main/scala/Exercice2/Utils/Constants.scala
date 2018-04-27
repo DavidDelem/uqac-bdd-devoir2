@@ -1,7 +1,7 @@
 package Exercice2.Utils
 
 object Constants {
-  val nearTargetRadius: Double = 60
+  val nearTargetRadius: Double = 80
   val stickDistance: Double = 2.0
 
   //Starting positions

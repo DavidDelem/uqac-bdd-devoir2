@@ -13,7 +13,7 @@ class Planetar (position: Position, id: Int)
     position,
     "GoodGuys",
     10,
-    List(("ft", 5), ("fly", 16)),
+    List(("ft", 5)),
     new Attack("+3 holy greatsword", 18, 21, List(27, 22, 17), 5),
     null,
     null

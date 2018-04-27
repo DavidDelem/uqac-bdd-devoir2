@@ -26,11 +26,7 @@ class Game extends Serializable {
     implicit val formats: DefaultFormats.type = DefaultFormats
 
     //WebSocket Client to send real-time data to the GUI
-    var options = new Options
-    options.idleTimeout =  15 * 60000
-    options.maxMessageSize =  15 * 8192
-
-    val webSocketClient = WebSocket(o=options)
+    val webSocketClient = WebSocket()
       .open("ws://localhost:8089/fight")
       .listener(new TextListener {
         override def onOpen(){ println("WSClient connected") }
