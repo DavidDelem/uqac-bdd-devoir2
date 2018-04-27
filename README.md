@@ -86,16 +86,19 @@ Nous l’avons également fait pour tous les sorts (bonus) en faisant un groupBy
 
 C'est un combat entre le Solar et les monstres pour protéger Pito, en utilisant GraphX de Spark. On commence par créer nos RDD de vertex et de edge dans <i>Combat1.scala</i>, puis on appelle la boucle principale qui se trouve dans <i>Game.scala</i>. On réalise un certain nombre d'itérations de cette boucle et lors de chaque itération, différentes étapes font évoluer le graphe:
 
-<b>1. Tous les 10 rounds, on enlève les monstres morts du RDD et on réalise un checkpoint() sur le RDD pour reset son lineage Graph.</b>
+<b>1. Tous les 5 rounds, on réalise un checkpoint() sur le graphe pour reset son lineage Graph :</b>
 
 ```scala
-if(roundCounter%10==0){
-    myGraph = myGraph.subgraph(vpred = (_, attr) =>  attr.hp > 0)
-    myGraph.checkpoint()
-}
+if(roundCounter%5==0) graph.checkpoint()
 ```
 
-<b>2. Pour chaque monstre, on commence par réaliser les actions qui ne dépendent que de lui de manière isolée :</b>
+<b>2. On supprime les monstres morts du graphe :</b>
+
+```scala
+roundGraph.subgraph(vpred = (_, attr) =>  attr.hp > 0)
+```
+
+<b>3. Pour chaque monstre, on commence par réaliser les actions qui ne dépendent que de lui de manière isolée :</b>
 - Régénération
 - Déplacement (en fonction de la vitesse de chaque monstre)
 - Etat touché pendant le round remis à false (utile pour l'affichage)
@@ -116,23 +119,23 @@ myGraph = Graph(newVerticesMove, myGraph.edges)
 
 <i>A noter que toutes les fonctions qui regénèrent, font les mouvements, calculent les dommages reçus ect... se trouvent dans LivingEntity (classe parente de tout les monstres).</i>
 
-<b>3. Pour chaque monstre, on choisi et on met à jours la cible à attaquer, de la façon suivante:</b>
-- Dans le AgregateMessages, on détermine pour chaque monstre l'énnemi le plus interessant à attaquer.
-- Dans le JoinVertixes, on met à jours le monstre avec la bonne target (pour cela, on créé une nouvelle instance du bon type de monstre avec la nouvelle target, qu'on return pour remplacer la précédente pour que ce soit pris en compte, d'ou l'utilisation du design pattern Prototype).
+<b>4. Pour chaque monstre, on choisi et on met à jours la cible à attaquer, de la façon suivante:</b>
+- Dans le AgregateMessages, on liste, pour un monstre donnée, toutes ses cibles potentielles.
+- Dans le JoinVertixes, on met à jour, pour un monstre, sa liste de targets en fonction du nombre de targets qu'il peut avoir à la fois (pour cela, on créé une nouvelle instance du bon type de monstre, qu'on return pour remplacer la précédente pour que ce soit pris en compte, d'où l'utilisation du design pattern Prototype).
 
 ```scala
-val targetMessages = myGraph.aggregateMessages[(LivingEntity, Position)](
+val targetMessages = roundGraph.aggregateMessages[List[LivingEntity]](
     sendTargetMsg,
     mergeTargetMsg,
     fields
 )
 
-myGraph = myGraph.joinVertices(targetMessages) {
+roundGraph = roundGraph.joinVertices(targetMessages) {
 
-    (_, fighter, tupleTarget) => {
+    (_, fighter, allTargets) => {
 
         val newFighter = LivingEntityPrototype.create(fighter)
-        newFighter.target = tupleTarget._1
+        newFighter.setTargets(allTargets)
         newFighter
     }
 }
@@ -140,18 +143,18 @@ myGraph = myGraph.joinVertices(targetMessages) {
 
 <i>Détail des fonctions sendTargetMsg() et mergeTargetMsg() en bas du fichier Game.scala</i>
 
-<b>4. Chaque monstre subit la somme des dégâts des autres monstres qui l'attaquent:</b>
+<b>5. Chaque monstre subit la somme des dégâts des autres monstres qui l'attaquent:</b>
 - Dans le AgregateMessages, on fait le calcul des dommages que va recevoir chaque monstre
 - Dans le joinVertixes, on fait perdre les HP à chaque monstre (pour cela, on créé une nouvelle instance du bon type de monstre avec les nouveaux HP).
 
 ```scala
-val damageMessages = myGraph.aggregateMessages[Int](
+val damageMessages = roundGraph.aggregateMessages[Int](
     sendDamageMsg,
     mergeDamageMsg,
     fields
 )
 
-myGraph = myGraph.joinVertices(damageMessages) {
+roundGraph = roundGraph.joinVertices(damageMessages) {
 
     (_, damageReceiver, damages) => {
 
