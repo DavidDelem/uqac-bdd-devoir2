@@ -60,7 +60,7 @@ $(function () {
     // WebSocket Client
     //----------------------
     
-    var webSocketClient = new WebSocket('ws://127.0.0.1:8089/fight');
+    var webSocketClient = new WebSocket('ws://localhost:8089/fight');
     webSocketClient.onmessage = function(e) {
         //If Scala program begins, clear fight
         if(e.data == "FightBeginning"){
@@ -117,7 +117,12 @@ $(function () {
                     //Move LivingEntities if not dead
                     if(vertex["_2"]["hp"] > 0){
 
-                        livingEntityContainer.css({left: `${vertex["_2"]["position"]["x"]*zoom + offsetX}px`, top: `${vertex["_2"]["position"]["y"]*zoom + offsetY}px`});
+                        livingEntityContainer.css({
+                            left: `${vertex["_2"]["position"]["x"]*zoom + offsetX}px`,
+                            top: `${vertex["_2"]["position"]["y"]*zoom + offsetY}px`
+                        });
+                        livingEntityContainer.css("z-index", getZIndex(vertex["_2"]));
+                        
                         if(vertex["_2"]["hurtDuringRound"]) livingEntityCircle.addClass("Hurt");
                     }
                     //Hide LivingEntities
@@ -138,17 +143,24 @@ $(function () {
     //----------------------
     
     function drawLivingEntity(livingEntity){
-        var str = `<div class="LivingEntityContainer" id = "${livingEntity["id"]}" style="left: ${livingEntity["position"]["x"]*zoom + offsetX}px; top: ${livingEntity["position"]["y"]*zoom + offsetY}px; z-index: `;
-        
-        if(livingEntity["team"] == "BadGuys") str += '2';
-        else str += '3';
-        
-        str += `;">
+        var str = `<div class="LivingEntityContainer" id = "${livingEntity["id"]}" style="left: ${livingEntity["position"]["x"]*zoom + offsetX}px; top: ${livingEntity["position"]["y"]*zoom + offsetY}px; z-index: `+getZIndex(livingEntity)+`;">
             <div class="${livingEntity["team"]} LivingEntityCircle">${livingEntity["hp"]}</div>
             <div class="text">${livingEntity["name"]}</div>
         </div>`;
         
         return str;
+    }
+    
+    function getZIndex(livingEntity){
+        
+        var zIndex = 0;
+        
+        if(livingEntity["hurtDuringRound"]) zIndex = 1;
+        
+        if(livingEntity["team"] == "BadGuys") zIndex += 2;
+        else zIndex += 4;
+        
+        return zIndex.toString();
     }
     
 }); 

@@ -58,7 +58,6 @@
 }
 
 .LivingEntityCircle {
-    /*margin: auto;*/
     width: 30px;
     height: 30px;
     -webkit-border-radius: 25px;
@@ -92,9 +91,7 @@
 }
 
 .text{
-    padding: 5px;
-    font-size: 12px;
-    /*text-align: center;*/
+    font-size: 12px
 }
 
 @-webkit-keyframes hurtBlink {

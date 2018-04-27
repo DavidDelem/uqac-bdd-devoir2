@@ -23,7 +23,7 @@ class Game extends Serializable {
 
     //WebSocket Client to send real-time data to the GUI
     val webSocketClient = WebSocket()
-      .open("ws://127.0.0.1:8089/fight")
+      .open("ws://localhost:8089/fight")
       .listener(new TextListener {
         override def onOpen(){ println("WSClient connected") }
         override def onClose(){ println("WSClient disconnected") }
@@ -36,9 +36,6 @@ class Game extends Serializable {
     def gameLoop(): Unit = {
 
       while (true) {
-        if(roundCounter%10 == 0) {
-          myGraph.checkpoint();
-        }
         roundCounter+=1
         println("================ Battle round : " + roundCounter + " ================")
 
