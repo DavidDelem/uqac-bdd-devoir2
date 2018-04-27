@@ -170,7 +170,7 @@ roundGraph = roundGraph.joinVertices(damageMessages) {
 ```
 <i>Détail des fonction sendDamageMsg() et mergeDamageMsg() en bas du ficher Game.scala</i>
 
-<b>5. Les vertices sont streamées en Websocket sur <i>ws://localhost:8089/fight</i> :</b>
+<b>6. Les vertices sont streamées en Websocket sur <i>ws://localhost:8089/fight</i> :</b>
 
 ```scala
 val webSocketClient = WebSocket().open("ws://localhost:8089/fight")
@@ -178,7 +178,7 @@ val webSocketClient = WebSocket().open("ws://localhost:8089/fight")
 webSocketClient.send(net.liftweb.json.Serialization.write(roundVerticesRDD))
 ```
 
-<b>6
+<b>7
     . On vérifie les conditions d'arrêt</b>
 - On compte le nombre d'alliés et d'ennemis encore vivant en faisant un filter suivi d'un count.
 - Si il reste 0 ennemi: Pito est sauvé :D
