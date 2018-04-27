@@ -86,7 +86,8 @@ class LivingEntity (
 
 
   def setTargets(newTargets: List[LivingEntity]) = {
-    this.targets = newTargets.sortBy((target) => Position.distanceBetween(this.position, target.position)).take(maxTargets)
+    val t = newTargets.sortBy((target) => Position.distanceBetween(this.position, target.position)).take(maxTargets)
+    this.targets = t
   }
 
   override def toString: String = "Name : " + name + ", HP : " + hp + ", Position : (" + position.x + ", " + position.y + ")"

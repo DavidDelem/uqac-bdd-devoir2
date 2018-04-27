@@ -53,10 +53,12 @@
 .LivingEntityContainer{
     display: inline-block;
     position: absolute;
+    width: 100px;
+    height: 100px;
 }
 
 .LivingEntityCircle {
-    margin: auto;
+    /*margin: auto;*/
     width: 30px;
     height: 30px;
     -webkit-border-radius: 25px;
@@ -92,7 +94,7 @@
 .text{
     padding: 5px;
     font-size: 12px;
-    text-align: center;
+    /*text-align: center;*/
 }
 
 @-webkit-keyframes hurtBlink {

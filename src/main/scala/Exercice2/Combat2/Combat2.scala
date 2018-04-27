@@ -127,8 +127,8 @@ object Combat2 extends App {
   }
 
   //200x Orc Barbarians
-  //for (i <- 12 to 211) {
-  for (i <- 12 to 20) {
+  for (i <- 12 to 211) {
+  //for (i <- 12 to 20) {
   protagonistBuffer += ((
       i,
       new GreataxeOrc(
@@ -164,19 +164,21 @@ object Combat2 extends App {
 
 
   val relationshipsBuffer: ArrayBuffer[Edge[Link]] = ArrayBuffer()
+  for (j <- 0 to protagonistBuffer.length-2) {
+    for {k <- j+1 to protagonistBuffer.length-1} {
 
-  for (protagonist1 <- protagonistBuffer) {
-    for (protagonist2 <- protagonistBuffer) {
-      if(protagonist1 == protagonist2){}
+//  for (protagonist1 <- protagonistBuffer) {
+//    for (protagonist2 <- protagonistBuffer) {
+      if(protagonistBuffer(j) == protagonistBuffer(k)){}
       else {
-        if (protagonist1._2.team == protagonist2._2.team) {
-          if(protagonist1._2.team == "GoodGuys" || protagonist2._2.team == "GoodGuys") {
-            relationshipsBuffer += Edge(protagonist1._2.id.toLong, protagonist2._2.id.toLong, new Link("friend"))
-          } else if (protagonist1._2.name == "Green Great Wyrm Dragon" || protagonist2._2.name == "Green Great Wyrm Dragon"){
-            relationshipsBuffer += Edge(protagonist1._2.id.toLong, protagonist2._2.id.toLong, new Link("friend"))
+        if (protagonistBuffer(j)._2.team == protagonistBuffer(k)._2.team) {
+          if(protagonistBuffer(j)._2.team == "GoodGuys" || protagonistBuffer(k)._2.team == "GoodGuys") {
+            relationshipsBuffer += Edge(protagonistBuffer(j)._2.id.toLong, protagonistBuffer(k)._2.id.toLong, new Link("friend"))
+          } else if (protagonistBuffer(j)._2.name == "Green Great Wyrm Dragon" || protagonistBuffer(k)._2.name == "Green Great Wyrm Dragon"){
+            relationshipsBuffer += Edge(protagonistBuffer(j)._2.id.toLong, protagonistBuffer(k)._2.id.toLong, new Link("friend"))
           }
         } else {
-          relationshipsBuffer += Edge(protagonist1._2.id.toLong, protagonist2._2.id.toLong, new Link("enemy"))
+          relationshipsBuffer += Edge(protagonistBuffer(j)._2.id.toLong, protagonistBuffer(k)._2.id.toLong, new Link("enemy"))
         }
       }
     }
@@ -191,5 +193,5 @@ object Combat2 extends App {
   val graph = Graph(protagonist, relationships)
 
   val game = new Game()
-  val resultsFight = game.execute(graph, sc, 100)
+  val resultsFight = game.execute(graph, sc, 1000)
 }
