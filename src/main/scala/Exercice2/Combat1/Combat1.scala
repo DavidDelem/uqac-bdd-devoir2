@@ -113,13 +113,13 @@ object Combat1 extends App  {
 
   val relationshipsBuffer: ArrayBuffer[Edge[Link]] = ArrayBuffer()
 
-  for (protagonist1 <- protagonistBuffer) {
-    for (protagonist2 <- protagonistBuffer) {
-      if(protagonist1 == protagonist2){}
+  for (j <- 0 to protagonistBuffer.length-2) {
+    for {k <- j+1 to protagonistBuffer.length-1} {
+      if(protagonistBuffer(j) == protagonistBuffer(k)){}
       else {
-        if (protagonist1._2.team == protagonist2._2.team) {
+        if (protagonistBuffer(j)._2.team == protagonistBuffer(k)._2.team) {
         } else {
-          relationshipsBuffer += Edge(protagonist1._2.id.toLong, protagonist2._2.id.toLong, new Link("enemy"))
+          relationshipsBuffer += Edge(protagonistBuffer(j)._2.id.toLong, protagonistBuffer(k)._2.id.toLong, new Link("enemy"))
         }
       }
     }
