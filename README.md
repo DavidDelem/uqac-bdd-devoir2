@@ -79,7 +79,7 @@ Nous l’avons également fait pour tous les sorts (bonus) en faisant un groupBy
 
 <h4>Combat 1. Solar vs Éclaireurs Orcs</h4>
 
-`Fichiers:` &nbsp;  Code principal: <i>src/main/scala/Exercice2/Combat1</i> &nbsp;&nbsp; - &nbsp;&nbsp; Nos monstres: <i>src/main/Exercice2/Bestiary</i><br>
+`Fichiers:` &nbsp;  Code principal: <i>src/main/scala/Exercice2/Game.scala et src/main/scala/Exercice2/Combat1</i> &nbsp;&nbsp; - &nbsp;&nbsp; Nos monstres: <i>src/main/Exercice2/Bestiary</i><br>
 
 
 `Ce qu'on a fait`<br>
@@ -175,22 +175,7 @@ val webSocketClient = WebSocket().open("ws://localhost:8089/fight")
 webSocketClient.send(net.liftweb.json.Serialization.write(roundVerticesRDD))
 ```
 
-<b>5.2 (Optionnel) Il est possible d'afficher les vertices à chaque round dans la console du programme Scala en décommentant la ligne suivante :</b>
-
-```scala
-GraphConsole.printLivingEntityGraphVertices(myGraph)
-```
-
-L'affichage en console est du type :
-
-- Le nom du monstre (ID, HP, POSITION) --DISTANCE-A-SA-CIBLE--> le monstre qu'il attaque(ID, HP, POSITION)
-
-<p align="center">
-  <img src="_imgreadme/exemple.png" width="800px"/>
-</p>
-
-
-<b>5
+<b>6
     . On vérifie les conditions d'arrêt</b>
 - On compte le nombre d'alliés et d'ennemis encore vivant en faisant un filter suivi d'un count.
 - Si il reste 0 ennemi: Pito est sauvé :D
@@ -212,28 +197,28 @@ else if(nbGoodGuysAlive == 0){
 else if (roundCounter == maxIterations) return
 ```
 
-Voici le résultat final, la plupart du temps Pito est sauvé car le Solar est trés puissant grâce à son bouclier et sa régénération ! Il faut quand même une quarantaine de rounds pour tuer tout les ennemis (les Double Axe Fury sont très résistants).
+La plupart du temps Pito est sauvé car le Solar est trés puissant grâce à son bouclier et sa régénération !
+
+Nous avons fait un affichage graphique dans un autre langage (jQuery, PHP et HTML). Les données sont transférées à l'interface via Websocket en temps réel pour un affichage en live. <a href="https://docs.google.com/document/d/1FYRVSCEYBRJ9QSq5nRjY9qPYKdYzW8SwYfZ03rMwpbw/edit?usp=sharing">Cliquer ici</a> pour voir les instructions de configuration et de lancement de l'interface. Voici le résultat:
 
 <p align="center">
-  <img src="_imgreadme/victoire.png" width="800px"/>
+  <img src="_imgreadme/combat1.gif" width="680px"/> <br>
+  <i>Gif du combat 1</i>
 </p>
 
-<b>FightGUI : interface graphique de combat</b>
-
-Nous avons également fait un affichage graphique mais dans un autre langage (jQuery, PHP et HTML). Les données sont transférées à l'interface via Websocket en temps réel pour un affichage du combat en live. <a href="https://docs.google.com/document/d/1FYRVSCEYBRJ9QSq5nRjY9qPYKdYzW8SwYfZ03rMwpbw/edit?usp=sharing">Cliquer ici</a> pour voir les instructions de configuration et de lancement de l'interface. Voici le résultat:
-
-<mark>GIF ANIME</mark>
 
 <h4>Combat 2. Les Orcs et le dragon vert attaquent le village de Pito</h4>
 
-`Fichiers:` &nbsp;  Code principal: <i>src/main/scala/Exercice2/Combat2</i> &nbsp;&nbsp; - &nbsp;&nbsp; Nos monstres: <i>src/main/Exercice2/Bestiary</i><br>
+`Fichiers:` &nbsp;  Code principal: <i>src/main/scala/Exercice2/Game.scala et src/main/scala/Exercice2/Combat2</i> &nbsp;&nbsp; - &nbsp;&nbsp; Nos monstres: <i>src/main/Exercice2/Bestiary</i><br>
 
 `Ce qu'on a fait`<br>
 
-Ce combat reprend les bases du premier combat, mais maintenant c'est plus compliqué ! Il y a plus de monstres. Il y a aussi de nouvelles attaques pour les monstres et un dragon en guise de super ennemi. On ne va pas tout réexpliquer en détail car c'est exactement le même principe que le combat 1. On peut ausi visualiser le combat 2 via l'interface (qui s'adapte automatiquement quelque soit le combat), il suffit de lancer le combat 2 au lieu du combat 1 via le programme Scala. Voici le résultat:
+Ce combat reprend les bases du premier combat, mais maintenant c'est plus compliqué ! Il y a plus de monstres. Il y a aussi de nouvelles attaques pour les monstres et un dragon en guise de super ennemi. On ne va pas tout réexpliquer en détail car c'est exactement le même principe que le combat 1. On peut ausi visualiser le combat 2 via l'interface. Voici le résultat, on a placé les monstres différemment et on voit bien le dragon qui va attaquer seul un Solar:
 
-<mark>GIF ANIME</mark>
-
+<p align="center">
+  <img src="_imgreadme/combat2.gif" width="600px"/><br>
+  <i>Gif du combat 2</i>
+</p>
 
 ---
 
