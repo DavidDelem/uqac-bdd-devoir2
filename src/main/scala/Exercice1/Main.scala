@@ -12,9 +12,9 @@ object Main extends App {
   implicit val formats: DefaultFormats.type = DefaultFormats
 
   val appname = "Devoir 2"
-  val master = "spark://192.168.0.181:7077"
+  val master = "local"//"spark://192.168.0.181:7077"
   val file = "crawlers/allMonsters.json"
-  val conf = new SparkConf().setAppName(appname).setMaster("spark://192.168.0.181:7077")
+  val conf = new SparkConf().setAppName(appname).setMaster(master)
   val sc = new SparkContext(conf)
 
 
@@ -42,8 +42,8 @@ object Main extends App {
   val batchViewHealSpellMonsters = batchViewSpellMonsters.filter(spell => spell._1.matches(".*(cure|wound).*"))
 
   //Création d'un fichier html avec les résultats
-  val saveFile = "batchViewSpellMonsters.html"
-  val saveFileHeal = "batchViewHealSpellMonsters.html"
+  val saveFile = "src/main/scala/Exercice1/batchViewSpellMonsters.html"
+  val saveFileHeal = "src/main/scala/Exercice1/batchViewHealSpellMonsters.html"
 
   var writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(saveFile)))
 

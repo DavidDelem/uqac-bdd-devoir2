@@ -94,8 +94,8 @@ object Combat2 extends App {
     ))
   }
 
-  //100x Orc Barbarians
-  for (i <- 12 to 111) {
+  //50x Orc Barbarians
+  for (i <- 12 to 61) {
   protagonistBuffer += ((
       i,
       new GreataxeOrc(
@@ -109,7 +109,7 @@ object Combat2 extends App {
   }
 
   //10x Angel Slayer
-  for (i <- 112 to 121) {
+  for (i <- 62 to 71) {
     protagonistBuffer += ((
       i,
       new AngelSlayer(
